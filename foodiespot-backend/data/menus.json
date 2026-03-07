@@ -1,0 +1,758 @@
+{
+  "r1": [
+    {
+      "id": "cat-r1-entrees",
+      "name": "Entrées",
+      "sortOrder": 1,
+      "items": [
+        {
+          "id": "d1",
+          "name": "Soupe à l'Oignon",
+          "description": "Soupe à l'oignon gratinée au fromage",
+          "price": 8.50,
+          "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2071&auto=format&fit=crop",
+          "category": "Entrées",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait"]
+        },
+        {
+          "id": "d2",
+          "name": "Escargots de Bourgogne",
+          "description": "6 escargots au beurre persillé",
+          "price": 12.00,
+          "image": "https://images.unsplash.com/photo-1598866594230-a7c12756260f?q=80&w=2070&auto=format&fit=crop",
+          "category": "Entrées",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["lait", "mollusques"]
+        },
+        {
+          "id": "d3",
+          "name": "Salade Niçoise",
+          "description": "Salade composée, thon, œufs, anchois, olives",
+          "price": 11.50,
+          "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop",
+          "category": "Entrées",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["poisson", "oeuf"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r1-plats",
+      "name": "Plats",
+      "sortOrder": 2,
+      "items": [
+        {
+          "id": "d4",
+          "name": "Boeuf Bourguignon",
+          "description": "Boeuf mijoté au vin rouge avec légumes de saison",
+          "price": 18.50,
+          "image": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?q=80&w=2070&auto=format&fit=crop",
+          "category": "Plats",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["sulfites"]
+        },
+        {
+          "id": "d5",
+          "name": "Coq au Vin",
+          "description": "Poulet fermier mijoté au vin rouge, lardons et champignons",
+          "price": 16.50,
+          "image": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?q=80&w=2070&auto=format&fit=crop",
+          "category": "Plats",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["sulfites"]
+        },
+        {
+          "id": "d6",
+          "name": "Magret de Canard",
+          "description": "Magret rôti, sauce aux fruits rouges, gratin dauphinois",
+          "price": 19.00,
+          "image": "https://images.unsplash.com/photo-1432139555190-58524dae6a55?q=80&w=2076&auto=format&fit=crop",
+          "category": "Plats",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": true,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["lait"]
+        },
+        {
+          "id": "d7",
+          "name": "Steak Frites",
+          "description": "Entrecôte grillée 300g, sauce au poivre, frites maison",
+          "price": 22.00,
+          "image": "https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=2071&auto=format&fit=crop",
+          "category": "Plats",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["lait"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r1-desserts",
+      "name": "Desserts",
+      "sortOrder": 3,
+      "items": [
+        {
+          "id": "d8",
+          "name": "Tarte Tatin",
+          "description": "Tarte aux pommes caramélisées, servie tiède",
+          "price": 7.00,
+          "image": "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?q=80&w=2070&auto=format&fit=crop",
+          "category": "Desserts",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait", "oeuf"]
+        },
+        {
+          "id": "d9",
+          "name": "Crème Brûlée",
+          "description": "Crème vanillée avec sa croûte caramélisée craquante",
+          "price": 6.50,
+          "image": "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?q=80&w=2070&auto=format&fit=crop",
+          "category": "Desserts",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["lait", "oeuf"]
+        },
+        {
+          "id": "d10",
+          "name": "Mousse au Chocolat",
+          "description": "Mousse onctueuse au chocolat noir 70%",
+          "price": 6.00,
+          "image": "https://images.unsplash.com/photo-1541599468348-e96984315921?q=80&w=2070&auto=format&fit=crop",
+          "category": "Desserts",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["lait", "oeuf"]
+        },
+        {
+          "id": "d11",
+          "name": "Profiteroles",
+          "description": "Choux garnis de glace vanille, sauce chocolat chaud",
+          "price": 7.50,
+          "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=2070&auto=format&fit=crop",
+          "category": "Desserts",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait", "oeuf"]
+        }
+      ]
+    }
+  ],
+  "r2": [
+    {
+      "id": "cat-r2-entrees",
+      "name": "Entrées",
+      "sortOrder": 1,
+      "items": [
+        {
+          "id": "d12",
+          "name": "Edamame",
+          "description": "Fèves de soja vapeur légèrement salées",
+          "price": 5.00,
+          "image": "https://images.unsplash.com/photo-1583933378650-4e4e3fbc8b0b?q=80&w=2070&auto=format&fit=crop",
+          "category": "Entrées",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": ["soja"]
+        },
+        {
+          "id": "d13",
+          "name": "Salade Wakame",
+          "description": "Salade d'algues marines, sauce sésame",
+          "price": 6.50,
+          "image": "https://images.unsplash.com/photo-1604908815774-0bcb28088e0a?q=80&w=2070&auto=format&fit=crop",
+          "category": "Entrées",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": ["sesame", "soja"]
+        },
+        {
+          "id": "d14",
+          "name": "Gyoza",
+          "description": "6 raviolis japonais porc et légumes, poêlés",
+          "price": 7.50,
+          "image": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=2070&auto=format&fit=crop",
+          "category": "Entrées",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "soja"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r2-sushi",
+      "name": "Sushi",
+      "sortOrder": 2,
+      "items": [
+        {
+          "id": "d15",
+          "name": "California Roll",
+          "description": "Rouleau de sushi avec crabe, avocat et concombre",
+          "price": 12.00,
+          "image": "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=2127&auto=format&fit=crop",
+          "category": "Sushi",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["crustaces", "gluten"]
+        },
+        {
+          "id": "d16",
+          "name": "Sushi Mix",
+          "description": "Assortiment de 12 sushis et makis variés",
+          "price": 18.00,
+          "image": "https://images.unsplash.com/photo-1564489563601-c53cfc451e93?q=80&w=2073&auto=format&fit=crop",
+          "category": "Sushi",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["poisson", "crustaces", "gluten"]
+        },
+        {
+          "id": "d17",
+          "name": "Sashimi Saumon",
+          "description": "8 tranches de saumon frais",
+          "price": 15.00,
+          "image": "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?q=80&w=2070&auto=format&fit=crop",
+          "category": "Sushi",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["poisson"]
+        },
+        {
+          "id": "d18",
+          "name": "Dragon Roll",
+          "description": "Tempura crevette, avocat, anguille grillée",
+          "price": 14.50,
+          "image": "https://images.unsplash.com/photo-1563612116625-3012372fccce?q=80&w=2008&auto=format&fit=crop",
+          "category": "Sushi",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": true,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["crustaces", "poisson", "gluten"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r2-poke",
+      "name": "Poke Bowls",
+      "sortOrder": 3,
+      "items": [
+        {
+          "id": "d19",
+          "name": "Poke Bowl Saumon",
+          "description": "Riz, saumon mariné, avocat, edamame, concombre, sauce soja",
+          "price": 14.00,
+          "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop",
+          "category": "Poke Bowls",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["poisson", "soja"]
+        },
+        {
+          "id": "d20",
+          "name": "Poke Bowl Thon",
+          "description": "Riz, thon mariné, mangue, radis, chou rouge, sauce ponzu",
+          "price": 15.00,
+          "image": "https://images.unsplash.com/photo-1623653387945-2fd25214f8fc?q=80&w=2070&auto=format&fit=crop",
+          "category": "Poke Bowls",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["poisson", "soja"]
+        },
+        {
+          "id": "d21",
+          "name": "Poke Bowl Veggie",
+          "description": "Riz, tofu grillé, avocat, algues, graines de sésame",
+          "price": 12.00,
+          "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop",
+          "category": "Poke Bowls",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": ["soja", "sesame"]
+        },
+        {
+          "id": "d22",
+          "name": "Poke Bowl Mix",
+          "description": "Riz, saumon et thon, avocat, concombre, sauce teriyaki",
+          "price": 16.00,
+          "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=2087&auto=format&fit=crop",
+          "category": "Poke Bowls",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": true,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["poisson", "soja"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r2-desserts",
+      "name": "Desserts",
+      "sortOrder": 4,
+      "items": [
+        {
+          "id": "d23",
+          "name": "Mochi Glacé",
+          "description": "Assortiment de 3 mochis glacés (vanille, thé vert, fraise)",
+          "price": 6.00,
+          "image": "https://images.unsplash.com/photo-1582716401301-b2407dc7563d?q=80&w=2070&auto=format&fit=crop",
+          "category": "Desserts",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["lait"]
+        },
+        {
+          "id": "d24",
+          "name": "Dorayaki",
+          "description": "Pancakes japonais fourrés à la pâte de haricots rouges",
+          "price": 5.50,
+          "image": "https://images.unsplash.com/photo-1605794138235-fc0249b3a711?q=80&w=2070&auto=format&fit=crop",
+          "category": "Desserts",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "oeuf"]
+        }
+      ]
+    }
+  ],
+  "r3": [
+    {
+      "id": "cat-r3-burgers",
+      "name": "Nos Burgers",
+      "description": "Tous nos burgers sont servis avec frites maison",
+      "sortOrder": 1,
+      "items": [
+        {
+          "id": "b1",
+          "name": "Classic Burger",
+          "description": "Steak haché 150g, cheddar affiné, salade, tomate, oignon rouge, sauce maison",
+          "price": 12.90,
+          "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait", "oeuf"]
+        },
+        {
+          "id": "b2",
+          "name": "Bacon Lover",
+          "description": "Steak haché 150g, double bacon croustillant, cheddar, oignons caramélisés, sauce BBQ",
+          "price": 14.90,
+          "image": "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait", "oeuf"]
+        },
+        {
+          "id": "b3",
+          "name": "Veggie Deluxe",
+          "description": "Steak végétal Beyond Meat, avocat, roquette, tomate séchée, sauce tahini",
+          "price": 13.50,
+          "image": "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=400",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": true,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": ["gluten", "sesame"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r3-sides",
+      "name": "Accompagnements",
+      "sortOrder": 2,
+      "items": [
+        {
+          "id": "s1",
+          "name": "Frites Maison",
+          "description": "Frites fraîches coupées à la main, sel de Guérande",
+          "price": 4.50,
+          "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": []
+        },
+        {
+          "id": "s2",
+          "name": "Onion Rings",
+          "description": "Rondelles d'oignon panées maison, sauce aioli",
+          "price": 5.90,
+          "image": "https://images.unsplash.com/photo-1639024471283-03518883512d?w=400",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "oeuf"]
+        }
+      ]
+    }
+  ],
+  "r4": [
+    {
+      "id": "cat-r4-pizzas",
+      "name": "Pizzas Classiques",
+      "description": "Pâte fermentée 48h, cuisson au feu de bois",
+      "sortOrder": 1,
+      "items": [
+        {
+          "id": "p1",
+          "name": "Margherita",
+          "description": "Sauce tomate, mozzarella fior di latte, basilic frais, huile d'olive",
+          "price": 11.90,
+          "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait"]
+        },
+        {
+          "id": "p2",
+          "name": "Quattro Formaggi",
+          "description": "Mozzarella, gorgonzola, parmesan, chèvre frais",
+          "price": 14.90,
+          "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait"]
+        },
+        {
+          "id": "p3",
+          "name": "Diavola",
+          "description": "Sauce tomate, mozzarella, salami piquant, piments",
+          "price": 13.90,
+          "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": true,
+          "spicyLevel": 2,
+          "allergens": ["gluten", "lait"]
+        }
+      ]
+    }
+  ],
+  "r5": [
+    {
+      "id": "cat-r5-tacos",
+      "name": "Tacos",
+      "description": "Tortillas de maïs faites maison",
+      "sortOrder": 1,
+      "items": [
+        {
+          "id": "t1",
+          "name": "Tacos Al Pastor (3 pcs)",
+          "description": "Porc mariné, ananas, coriandre, oignon",
+          "price": 9.90,
+          "image": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten"]
+        },
+        {
+          "id": "t2",
+          "name": "Tacos Carnitas (3 pcs)",
+          "description": "Porc effiloché confit, salsa verde, oignon",
+          "price": 10.90,
+          "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten"]
+        },
+        {
+          "id": "t3",
+          "name": "Tacos Vegetarianos (3 pcs)",
+          "description": "Haricots noirs, maïs grillé, poivrons, guacamole",
+          "price": 8.90,
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": ["gluten"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r5-sides",
+      "name": "Accompagnements",
+      "sortOrder": 2,
+      "items": [
+        {
+          "id": "ts1",
+          "name": "Guacamole & Chips",
+          "description": "Guacamole frais maison, chips de maïs",
+          "price": 6.90,
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": []
+        },
+        {
+          "id": "ts2",
+          "name": "Nachos Supreme",
+          "description": "Chips, fromage fondu, jalapeños, crème, salsa",
+          "price": 8.90,
+          "image": "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400",
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": true,
+          "spicyLevel": 1,
+          "allergens": ["lait"]
+        }
+      ]
+    }
+  ],
+  "r6": [
+    {
+      "id": "cat-r6-bowls",
+      "name": "Bowls Signatures",
+      "description": "Base au choix: quinoa, riz complet ou nouilles de riz",
+      "sortOrder": 1,
+      "items": [
+        {
+          "id": "gb1",
+          "name": "Buddha Bowl",
+          "description": "Quinoa, pois chiches, avocat, patate douce, kale, tahini",
+          "price": 13.90,
+          "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": ["sesame"]
+        },
+        {
+          "id": "gb2",
+          "name": "Poké Saumon",
+          "description": "Riz vinaigré, saumon mariné, avocat, edamame, mangue",
+          "price": 14.90,
+          "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["poisson", "soja"]
+        },
+        {
+          "id": "gb3",
+          "name": "Power Bowl",
+          "description": "Quinoa, poulet grillé, brocoli, avocat, graines de courge",
+          "price": 14.90,
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": true,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": []
+        }
+      ]
+    },
+    {
+      "id": "cat-r6-salads",
+      "name": "Salades",
+      "sortOrder": 2,
+      "items": [
+        {
+          "id": "gs1",
+          "name": "Caesar Healthy",
+          "description": "Romaine, poulet grillé, parmesan, croûtons complets, sauce légère",
+          "price": 12.90,
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["gluten", "lait", "oeuf"]
+        },
+        {
+          "id": "gs2",
+          "name": "Green Goddess",
+          "description": "Mesclun, avocat, concombre, feta, menthe, citron",
+          "price": 11.90,
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": ["lait"]
+        }
+      ]
+    },
+    {
+      "id": "cat-r6-juices",
+      "name": "Jus & Smoothies",
+      "sortOrder": 3,
+      "items": [
+        {
+          "id": "gj1",
+          "name": "Green Detox",
+          "description": "Épinards, pomme, concombre, citron, gingembre",
+          "price": 5.90,
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": []
+        },
+        {
+          "id": "gj2",
+          "name": "Berry Boost",
+          "description": "Myrtilles, fraises, banane, lait d'amande",
+          "price": 6.50,
+          "isAvailable": true,
+          "isPopular": false,
+          "isNew": false,
+          "isVegetarian": true,
+          "isVegan": true,
+          "isSpicy": false,
+          "allergens": ["fruits_a_coque"]
+        }
+      ]
+    }
+  ]
+}

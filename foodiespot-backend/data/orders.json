@@ -1,0 +1,161 @@
+[
+  {
+    "id": "o1",
+    "orderNumber": "FS-20240115-001",
+    "userId": "demo-user",
+    "restaurantId": "r1",
+    "restaurantName": "Bistro Parisien",
+    "restaurantImage": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop",
+    "items": [
+      {
+        "menuItemId": "d1",
+        "menuItem": {
+          "id": "d1",
+          "name": "Soupe à l'Oignon",
+          "price": 8.50,
+          "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2071&auto=format&fit=crop"
+        },
+        "quantity": 2,
+        "totalPrice": 17.00
+      },
+      {
+        "menuItemId": "d4",
+        "menuItem": {
+          "id": "d4",
+          "name": "Boeuf Bourguignon",
+          "price": 18.50,
+          "image": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?q=80&w=2070&auto=format&fit=crop"
+        },
+        "quantity": 1,
+        "totalPrice": 18.50
+      }
+    ],
+    "status": "delivered",
+    "subtotal": 35.50,
+    "deliveryFee": 3.50,
+    "serviceFee": 0.99,
+    "tip": 0,
+    "discount": 0,
+    "total": 39.99,
+    "paymentMethod": "card",
+    "deliveryAddress": {
+      "id": "addr-1",
+      "label": "Maison",
+      "street": "15 avenue des Champs-Élysées",
+      "city": "Paris",
+      "postalCode": "75008",
+      "country": "France",
+      "latitude": 48.8698,
+      "longitude": 2.3075,
+      "isDefault": true
+    },
+    "estimatedDelivery": "2024-01-15T19:30:00Z",
+    "actualDelivery": "2024-01-15T19:25:00Z",
+    "driverInfo": {
+      "id": "driver-1",
+      "name": "Jean Dupont",
+      "phone": "+33 6 12 34 56 78",
+      "avatar": "https://randomuser.me/api/portraits/men/32.jpg",
+      "vehicle": "Scooter",
+      "licensePlate": "AB-123-CD",
+      "rating": 4.9
+    },
+    "timeline": [
+      { "status": "pending", "timestamp": "2024-01-15T18:45:00Z", "message": "Commande reçue" },
+      { "status": "confirmed", "timestamp": "2024-01-15T18:47:00Z", "message": "Commande confirmée par le restaurant" },
+      { "status": "preparing", "timestamp": "2024-01-15T18:50:00Z", "message": "Préparation en cours" },
+      { "status": "ready", "timestamp": "2024-01-15T19:10:00Z", "message": "Commande prête" },
+      { "status": "picked_up", "timestamp": "2024-01-15T19:12:00Z", "message": "Récupérée par le livreur" },
+      { "status": "delivering", "timestamp": "2024-01-15T19:15:00Z", "message": "En cours de livraison" },
+      { "status": "delivered", "timestamp": "2024-01-15T19:25:00Z", "message": "Livrée" }
+    ],
+    "createdAt": "2024-01-15T18:45:00Z",
+    "updatedAt": "2024-01-15T19:25:00Z"
+  },
+  {
+    "id": "o2",
+    "orderNumber": "FS-20240116-002",
+    "userId": "demo-user",
+    "restaurantId": "r2",
+    "restaurantName": "Tokyo Roll",
+    "restaurantImage": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2070&auto=format&fit=crop",
+    "items": [
+      {
+        "menuItemId": "d12",
+        "menuItem": {
+          "id": "d12",
+          "name": "Edamame",
+          "price": 5.00,
+          "image": "https://images.unsplash.com/photo-1583933378650-4e4e3fbc8b0b?q=80&w=2070&auto=format&fit=crop"
+        },
+        "quantity": 1,
+        "totalPrice": 5.00
+      },
+      {
+        "menuItemId": "d16",
+        "menuItem": {
+          "id": "d16",
+          "name": "Sushi Mix",
+          "price": 18.00,
+          "image": "https://images.unsplash.com/photo-1564489563601-c53cfc451e93?q=80&w=2073&auto=format&fit=crop"
+        },
+        "quantity": 1,
+        "totalPrice": 18.00
+      },
+      {
+        "menuItemId": "d19",
+        "menuItem": {
+          "id": "d19",
+          "name": "Poke Bowl Saumon",
+          "price": 14.00,
+          "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop"
+        },
+        "quantity": 1,
+        "totalPrice": 14.00
+      }
+    ],
+    "status": "delivering",
+    "subtotal": 37.00,
+    "deliveryFee": 2.99,
+    "serviceFee": 0.99,
+    "tip": 2.00,
+    "discount": 0,
+    "total": 42.98,
+    "paymentMethod": "card",
+    "deliveryAddress": {
+      "id": "addr-1",
+      "label": "Maison",
+      "street": "15 avenue des Champs-Élysées",
+      "city": "Paris",
+      "postalCode": "75008",
+      "country": "France",
+      "latitude": 48.8698,
+      "longitude": 2.3075,
+      "isDefault": true
+    },
+    "estimatedDelivery": "2024-01-16T20:00:00Z",
+    "driverInfo": {
+      "id": "driver-2",
+      "name": "Sophie Martin",
+      "phone": "+33 6 87 65 43 21",
+      "avatar": "https://randomuser.me/api/portraits/women/44.jpg",
+      "vehicle": "Vélo électrique",
+      "licensePlate": null,
+      "rating": 4.8,
+      "location": {
+        "latitude": 48.8650,
+        "longitude": 2.3100
+      }
+    },
+    "timeline": [
+      { "status": "pending", "timestamp": "2024-01-16T19:00:00Z", "message": "Commande reçue" },
+      { "status": "confirmed", "timestamp": "2024-01-16T19:02:00Z", "message": "Commande confirmée par le restaurant" },
+      { "status": "preparing", "timestamp": "2024-01-16T19:05:00Z", "message": "Préparation en cours" },
+      { "status": "ready", "timestamp": "2024-01-16T19:25:00Z", "message": "Commande prête" },
+      { "status": "picked_up", "timestamp": "2024-01-16T19:28:00Z", "message": "Récupérée par le livreur" },
+      { "status": "delivering", "timestamp": "2024-01-16T19:30:00Z", "message": "En cours de livraison" }
+    ],
+    "createdAt": "2024-01-16T19:00:00Z",
+    "updatedAt": "2024-01-16T19:30:00Z"
+  }
+]
