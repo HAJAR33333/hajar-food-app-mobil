@@ -143,6 +143,22 @@ export const restaurantAPI = {
             return [];
         }
     },
+    async getCategories(): Promise<any[]> {
+        const isConnected = await checkConnection();
+        if (!isConnected) {
+            const cached = await cache.get<any[]>('categories');
+            return cached || [];
+        }
+        try {
+            const response = await api.get('/categories');
+            const categories = response.data?.data || response.data || [];
+            await cache.set('categories', categories);
+            return categories;
+        } catch (error) {
+            const cached = await cache.get<any[]>('categories');
+            return cached || [];
+        }
+    },
     async getActivePromo(): Promise<Promo> {
         try {
             const response = await api.get('/promos/active');

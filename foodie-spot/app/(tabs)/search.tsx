@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { RestaurantCard } from "@/components/restaurant-card";
 import { Colors } from "@/constants/theme";
@@ -14,21 +14,44 @@ export default function SearchScreen() {
     const { t } = useTranslation();
     const router = useRouter();
     const [query, setQuery] = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
     const [filters, setFilters] = useState<SearchFilters>({});
     const [showFilters, setShowFilters] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            const data = await restaurantAPI.getCategories();
+            setCategories(data);
+        };
+        loadCategories();
+    }, []);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedQuery(query);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [query]);
 
     useEffect(() => {
         loadRestaurants();
-    }, [query, filters]);
+    }, [debouncedQuery, filters]);
 
     const loadRestaurants = async () => {
-        if (query) {
-            const data = await restaurantAPI.searchRestaurants(query);
-            setRestaurants(data);
-        } else {
-            const data = await restaurantAPI.getRestaurants(filters);
-            setRestaurants(data);
+        setLoading(true);
+        try {
+            if (debouncedQuery) {
+                const data = await restaurantAPI.searchRestaurants(debouncedQuery);
+                setRestaurants(data);
+            } else {
+                const data = await restaurantAPI.getRestaurants(filters);
+                setRestaurants(data);
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -49,29 +72,59 @@ export default function SearchScreen() {
                 </TouchableOpacity>
             </View>
 
-            {
-                showFilters && (
-                    <View style={styles.filters}>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            {['Burger', 'Pizza', 'Sushi', 'Healthy', 'Desserts'].map((cuisine) => (
-                                <TouchableOpacity key={cuisine} style={styles.filterChip}
-                                    onPress={() => setFilters({ ...filters, cuisine: filters.cuisine ? undefined : cuisine })}>
-                                    <Text style={[styles.filterChipText, filters.cuisine === cuisine && styles.filterChipTextActive]}>{cuisine}</Text>
-                                </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                    </View>
-                )
-            }
+            {showFilters && (
+                <View style={styles.filters}>
+                    <FlatList
+                        data={categories}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={(item, index) => (item._id || item.id || String(index))}
+                        contentContainerStyle={{ paddingHorizontal: 10 }}
+                        renderItem={({ item, index }) => {
+                            const cuisineValue = typeof item === 'string' ? item : (item.name || item.label || item._id);
+                            const isActive = filters.cuisine === cuisineValue;
 
-            <ScrollView style={styles.content}>
-                <Text style={styles.resultsText}>
-                    {restaurants.length} {t('search.results_found')}
-                </Text>
-                {restaurants.map((restaurant) => (
-                    <RestaurantCard key={restaurant.id} restaurant={restaurant} onPress={() => router.push(`/restaurant/${restaurant.id}`)} />
-                ))}
-            </ScrollView>
+                            return (
+                                <TouchableOpacity
+                                    style={[styles.filterChip, isActive && styles.filterChipActive]}
+                                    onPress={() => setFilters({
+                                        ...filters,
+                                        cuisine: isActive ? undefined : cuisineValue
+                                    })}
+                                >
+                                    <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+                                        {cuisineValue}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        }}
+                    />
+                </View>
+            )}
+            <FlatList
+                data={restaurants}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.contentContainer}
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={() => (
+                    <Text style={styles.resultsText}>
+                        {restaurants.length} {t('search.results_found')}
+                    </Text>
+                )}
+                renderItem={({ item }) => (
+                    <RestaurantCard restaurant={item} onPress={() => router.push(`/restaurant/${item.id}`)} />
+                )}
+                ListEmptyComponent={() => (
+                    !loading ? (
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.emptyText}>{t('home.no_restaurant_found')}</Text>
+                        </View>
+                    ) : null
+                )}
+                ListFooterComponent={() => (
+                    loading ? <ActivityIndicator size="large" color="#FF6B35" style={{ marginTop: 20 }} /> : null
+                )}
+            />
         </SafeAreaView>
     );
 }
@@ -119,6 +172,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         marginRight: 8,
     },
+    filterChipActive: {
+        backgroundColor: '#FF6B35',
+    },
     filterChipText: {
         fontSize: 14,
         color: '#666',
@@ -127,9 +183,18 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '600',
     },
-    content: {
-        flex: 1,
+    contentContainer: {
         padding: 16,
+        paddingBottom: 40,
+    },
+    emptyContainer: {
+        padding: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#666',
     },
     resultsText: {
         fontSize: 14,

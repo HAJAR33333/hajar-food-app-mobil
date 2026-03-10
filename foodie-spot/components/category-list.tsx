@@ -1,28 +1,39 @@
-import { Coffee, IceCream2, Pizza, Sandwich, UtensilsCrossed } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-const categories = [
-    { label: 'Burger', icon: <Sandwich size={18} color="#FF6B35" /> },
-    { label: 'Pizza', icon: <Pizza size={18} color="#FF6B35" /> },
-    { label: 'Sushi', icon: <UtensilsCrossed size={18} color="#FF6B35" /> },
-    { label: 'Healthy', icon: <Coffee size={18} color="#FF6B35" /> },
-    { label: 'Desserts', icon: <IceCream2 size={18} color="#FF6B35" /> },
-];
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { restaurantAPI } from '@/services/api';
 
 export const CategoryList: React.FC = () => {
     const { t } = useTranslation();
+    const [categories, setCategories] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            const data = await restaurantAPI.getCategories();
+            if (data && data.length > 0) {
+                setCategories(data);
+            }
+            setLoading(false);
+        };
+        loadCategories();
+    }, []);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{t('home.categories')}</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {categories.map((category) => (
-                    <TouchableOpacity key={category.label} style={styles.chip}>
-                        {category.icon}
-                        <Text style={styles.chipText}>{category.label}</Text>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
+            {loading ? (
+                <ActivityIndicator size="small" color="#FF6B35" style={{ alignSelf: 'flex-start' }} />
+            ) : (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {categories.map((category) => (
+                        <TouchableOpacity key={category.id || category._id || category.name} style={styles.chip}>
+                            {category.icon && <Text style={styles.emojiIcon}>{category.icon}</Text>}
+                            <Text style={styles.chipText}>{category.name || category.label}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            )}
         </View>
     );
 };
@@ -46,6 +57,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 18,
         marginRight: 12,
+    },
+    emojiIcon: {
+        fontSize: 16,
     },
     chipText: {
         color: '#FF6B35',
