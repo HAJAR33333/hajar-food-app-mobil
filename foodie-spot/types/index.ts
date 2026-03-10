@@ -25,6 +25,9 @@ export interface SearchFilters {
     rating?: number;
     deliveryTime?: number;
     isOpen?: boolean;
+    lat?: number;
+    lng?: number;
+    radius?: number;
 }
 export interface Dish {
     id: string;
@@ -79,7 +82,7 @@ export interface Order {
     createdAt: Date;
     estimatedDeliveryTime?: Date;
     deliveryAddress: string;
-    driverInfo?:{
+    driverInfo?: {
         name: string;
         phone: string;
         photo?: string;
@@ -104,12 +107,12 @@ export interface ToastOptions {
 
 export type ToastType = 'success' | 'error' | 'info';
 
-export interface ToastContextType { 
-    show: (message: string,  type?: ToastType, duration?: number) => void;
-    success: (message: string,  duration?: number) => void;
-    error: (message: string,  duration?: number) => void;
+export interface ToastContextType {
+    show: (message: string, type?: ToastType, duration?: number) => void;
+    success: (message: string, duration?: number) => void;
+    error: (message: string, duration?: number) => void;
     info: (message: string, duration?: number) => void;
-    warning: (message: string,  duration?: number) =>  void;
+    warning: (message: string, duration?: number) => void;
 }
 
 

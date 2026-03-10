@@ -6,10 +6,12 @@ import { Colors } from "@/constants/theme";
 import { restaurantAPI } from "@/services/api";
 import { Restaurant, SearchFilters } from "@/types";
 import { Filter, Search } from "lucide-react-native";
+import { useTranslation } from 'react-i18next';
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SearchScreen() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [query, setQuery] = useState('');
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -37,7 +39,7 @@ export default function SearchScreen() {
                     <Search size={24} color={Colors.light.text} />
                     <TextInput
                         style={styles.searchInput}
-                        placeholder="Rechercher un restaurant"
+                        placeholder={t('search.search_placeholder')}
                         value={query}
                         onChangeText={setQuery}
                     />
@@ -64,8 +66,7 @@ export default function SearchScreen() {
 
             <ScrollView style={styles.content}>
                 <Text style={styles.resultsText}>
-
-                    {restaurants.length} {restaurants.length > 1 ? 'restaurants' : 'restaurant'} trouvés
+                    {restaurants.length} {t('search.results_found')}
                 </Text>
                 {restaurants.map((restaurant) => (
                     <RestaurantCard key={restaurant.id} restaurant={restaurant} onPress={() => router.push(`/restaurant/${restaurant.id}`)} />

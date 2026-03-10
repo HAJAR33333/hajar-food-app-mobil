@@ -242,7 +242,7 @@ class AuthService {
       }
       await this.clearTokens();
       cache.clearAll();
-      
+
       log.info('✅ [Auth] Logout successful');
     } catch (error) {
       log.error('❌ [Auth] Logout error:', error);

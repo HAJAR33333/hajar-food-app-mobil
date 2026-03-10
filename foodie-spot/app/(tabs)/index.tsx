@@ -1,54 +1,64 @@
 import { MapPin, Search } from 'lucide-react-native';
-import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 
 import { CategoryList } from '@/components/category-list';
 import { RestaurantCard } from '@/components/restaurant-card';
-import { restaurantAPI } from '@/services/api';
+import { Promo, restaurantAPI } from '@/services/api';
 import { locationService } from '@/services/location';
 import { Restaurant } from '@/types';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [location, setLocation] = useState<string>('Locating...');
+  const { t, i18n } = useTranslation();
+
+  const toggleLanguage = () => {
+    const currentLang = i18n.language || 'fr';
+    const newLang = currentLang.startsWith('fr') ? 'en' : 'fr';
+    i18n.changeLanguage(newLang);
+  };
+  const [location, setLocation] = useState<string>(t('home.locating'));
+  const [promo, setPromo] = useState<Promo | null>(null);
 
   useEffect(() => {
-    // Fetch restaurants data
-    loadData();
-    getCurrentLocation();
+    loadAllData();
   }, []);
 
-  const loadData = async () => {
+  const loadAllData = async () => {
     try {
-      const data = await restaurantAPI.getRestaurants();
-      setRestaurants(data);
+      setLoading(true);
+
+      const promoData = await restaurantAPI.getActivePromo();
+      setPromo(promoData);
+
+      const coords = await locationService.getCurrentLocation();
+      if (coords) {
+        const address = await locationService.reverseGeoCode(coords);
+        if (address) {
+          setLocation(address);
+        }
+        const data = await restaurantAPI.getRestaurants({ lat: coords.latitude, lng: coords.longitude, radius: 20 });
+        setRestaurants(data);
+      } else {
+        const data = await restaurantAPI.getRestaurants();
+        setRestaurants(data);
+      }
     } catch (error) {
-      // log.error("Failed to load restaurants", error);
-      Alert.alert("Error", "Failed to load restaurants");
+      Alert.alert(t('home.error'), t('home.error_loading'));
     }
     finally {
       setLoading(false);
     }
   };
 
-  const getCurrentLocation = async () => {
-    const coords = await locationService.getCurrentLocation();
-    if (coords) {
-      const address = await locationService.reverseGeoCode(coords);
-      if (address) {
-        setLocation(address);
-      }
-    }
-
-  };
-
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadData();
+    await loadAllData();
     setRefreshing(false);
   };
 
@@ -57,39 +67,53 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View style={styles.locationContainer}>
           <MapPin size={20} color="#fff" />
-          <View style= {{ flex: 1}}>
-            <Text style={styles.locationLabel}>Livraison à </Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.locationLabel}>{t('home.deliver_to')} </Text>
             <Text style={styles.locationText} numberOfLines={1}>{location}</Text>
           </View>
+          <TouchableOpacity
+            style={styles.langButton}
+            onPress={toggleLanguage}
+          >
+            <Text style={styles.langButtonText}>{i18n.language?.startsWith('fr') ? 'EN' : 'FR'}</Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.searchBar} onPress={() => router.push('/(tabs)/search')}>
-        <Search size={20} color="#666" />
-        <Text style={styles.searchPlaceholder}>Rechercher un restaurant...</Text>
+          <Search size={20} color="#666" />
+          <Text style={styles.searchPlaceholder}>{t('home.search_placeholder')}</Text>
         </TouchableOpacity>
       </View>
 
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-         <View style={styles.promoBanner}>
-          <Text style={styles.promoLabel}>Offre spéciale</Text>
-          <Text style={styles.promoTitle}>-30% sur votre première commande</Text>
-          <Text style={styles.promoCode}>Code: FOODIE30</Text>
-         </View>
+        {promo && (
+          <View style={styles.promoBanner}>
+            <Text style={styles.promoLabel}>{t('home.special_offer')}</Text>
+            <Text style={styles.promoTitle}>{promo.title}</Text>
+            <Text style={styles.promoCode}>Code: {promo.code}</Text>
+          </View>
+        )}
 
-          <CategoryList />
+        <CategoryList />
 
-          <View style={styles.section}>
-              <Text style={styles.sectionTitle}> A proximité</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}> {t('home.nearby')}</Text>
+
+          {loading ? (
+            <ActivityIndicator size="large" color="#FF6B35" style={{ margin: 20 }} />
+          ) : (
+            <>
               {restaurants.map((restaurant) => (
                 <RestaurantCard key={restaurant.id} restaurant={restaurant} onPress={() => router.push(`/restaurant/${restaurant.id}`)} />
               ))}
-              {!loading && restaurants.length === 0 && <Text style={styles.emptyText}>Aucun restaurant trouvé</Text>}
-              {/* {loading && <Text>Chargement des restaurants...</Text>} */}
-          </View>
-         
+              {restaurants.length === 0 && <Text style={styles.emptyText}>{t('home.no_restaurant_found')}</Text>}
+            </>
+          )}
+        </View>
+
       </ScrollView>
-    
+
     </SafeAreaView>
   );
 
@@ -120,6 +144,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
   },
+  langButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  langButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -134,7 +170,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(0, 0, 0, 0.5)',
   },
-  content : {
+  content: {
     flex: 1,
   },
   promoBanner: {

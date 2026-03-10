@@ -2,8 +2,8 @@ import Constants from 'expo-constants';
 
 const ENV = {
     development: {
-        // API_URL: 'http://localhost:4000/',
-        API_URL: 'http://192.168.1.91:4000/',
+       // API_URL: 'http://localhost:4000',
+         API_URL: 'http://10.38.163.140:4000',
     },
     staging: {
         API_URL: 'https://staging-api.foodie-spot.com/api',
@@ -20,7 +20,7 @@ const getEnvVars = () => {
     } else if (releaseChannel === 'staging') {
         return ENV.staging;
     } else {
-        return ENV.development; 
+        return ENV.development;
     }
 };
 

@@ -8,6 +8,12 @@ import { Dish, Order, Restaurant, SearchFilters, User } from '@/types';
 import log from './logger';
 import config from '@/constants/config';
 
+// Interface pour la promo dynamique
+export interface Promo {
+    title: string;
+    code: string;
+    discount?: string;
+}
 
 const api = axios.create({
     baseURL: config.API_URL,
@@ -44,7 +50,7 @@ api.interceptors.response.use(
             await storage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
             try {
                 await auth.clearTokens();
-            } catch {} // ignore
+            } catch { } // ignore
         }
         return Promise.reject(error);
     }
@@ -117,7 +123,7 @@ export const restaurantAPI = {
         }
 
         try {
-            const response = await api.get('/restaurants', { params: filters});
+            const response = await api.get('/restaurants', { params: filters });
             // API returns { success, data: [...], pagination: {...} }
             const restaurants = response.data?.data || [];
             await cache.set('restaurants', restaurants);
@@ -135,6 +141,19 @@ export const restaurantAPI = {
         } catch (error) {
             log.error('Failed to search restaurants', error);
             return [];
+        }
+    },
+    async getActivePromo(): Promise<Promo> {
+        try {
+            const response = await api.get('/promos/active');
+            return response.data?.data || response.data;
+        } catch (error) {
+            log.warn('Failed to fetch dynamic promo, using fallback');
+            // Fallback en dur si l'API échoue
+            return {
+                title: "-30% sur votre commande",
+                code: "FOODIE30"
+            };
         }
     },
     async getRestaurantById(id: string): Promise<Restaurant | null> {
@@ -195,7 +214,7 @@ export const userAPI = {
             await storage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
             log.info('User logged in successfully');
             return { user, token };
-     } catch (error) {
+        } catch (error) {
             log.error('Login failed', error);
             throw error;
         }
@@ -294,4 +313,4 @@ export const uploadAPI = {
     }
 }
 
-export default api ;
+export default api;

@@ -9,11 +9,12 @@ import { userAPI, uploadAPI } from '../../services/api';
 import type { User } from '../../types';
 import log from '../../services/logger';
 import auth from '@/services/auth';
-import  { useToast, ToastProvider } from '@/components/toast-provider';
+import { useToast, ToastProvider } from '@/components/toast-provider';
 import { useAuth } from '@/contexts/auth-context';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileScreen() {
-
+  const { t } = useTranslation();
   const toast = useToast();
   const [user, setUser] = useState<User | null>(null);
   const { logout } = useAuth();
@@ -47,7 +48,7 @@ export default function ProfileScreen() {
         const imageUrl = await uploadAPI.uploadImage(result.assets[0].uri, 'profile');
         await userAPI.updateProfile({ photo: imageUrl });
         await loadUser();
-        toast.success('Photo de profil mise à jour !'); 
+        toast.success('Photo de profil mise à jour !');
       } catch (error) {
         log.error('Failed to upload profile photo:', error);
         Alert.alert('Erreur', 'Impossible de télécharger la photo');
@@ -70,99 +71,11 @@ export default function ProfileScreen() {
 
   if (!user) {
     return (
-    //   <SafeAreaView style={styles.container}>
-    //     <View style={styles.loading}>
-    //       <Text>Chargement...</Text>
-    //     </View>
-    //   </SafeAreaView>
-
-      <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView>
-        <View style={styles.header}>
-          <View style={styles.profileContainer}>
-            <View style={styles.avatarContainer}>
-              {user?.photo ? (
-                <Image source={{ uri: user?.photo }} style={styles.avatar} />
-              ) : (
-                <View style={styles.avatarPlaceholder}>
-                  <Text style={styles.avatarText}>{user?.name.charAt(0).toUpperCase()}</Text>
-                </View>
-              )}
-              <TouchableOpacity style={styles.cameraButton} onPress={handlePickImage}>
-                <Camera size={14} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.name}>{user?.name}</Text>
-            <Text style={styles.email}>{user?.email}</Text>
-            <Text style={styles.phone}>{user?.phone}</Text>
-          </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loading}>
+          <Text>{t('home.loading_restaurants')}</Text>
         </View>
-
-        <View style={styles.stats}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>12</Text>
-            <Text style={styles.statLabel}>Commandes</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{user?.favoriteRestaurants?.length ?? 0}</Text>
-            <Text style={styles.statLabel}>Favoris</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>4.8</Text>
-            <Text style={styles.statLabel}>Avis</Text>
-          </View>
-        </View>
-
-        <View style={styles.menu}>
-          <TouchableOpacity style={styles.menuItem}>
-            <MapPin size={20} color="#666" />
-            <Text style={styles.menuText}>Mes adresses</Text>
-            <View style={styles.menuRight}>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>{user?.addresses.length}</Text>
-              </View>
-              <ChevronRight size={18} color="#ccc" />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(tabs)/favorites')}>
-            <Heart size={20} color="#666" />
-            <Text style={styles.menuText}>Mes favoris</Text>
-            <View style={styles.menuRight}>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>{user?.favoriteRestaurants.length}</Text>
-              </View>
-              <ChevronRight size={18} color="#ccc" />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(tabs)/orders')}>
-            <ShoppingBag size={20} color="#666" />
-            <Text style={styles.menuText}>Historique</Text>
-            <ChevronRight size={18} color="#ccc" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Support', 'Pour toute assistance, veuillez contacter notre support client ')}>
-            <Phone size={20} color="#666" />
-            <Text style={styles.menuText}>Support</Text>
-            <ChevronRight size={18} color="#ccc" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem}>
-            <Share2 size={20} color="#666" />
-            <Text style={styles.menuText}>Partager l'app</Text>
-            <ChevronRight size={18} color="#ccc" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.menuItem, styles.logoutItem]} onPress={handleLogout}>
-            <LogOut size={20} color="#FF6B35" />
-            <Text style={[styles.menuText, styles.logoutText]}>Déconnexion</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
     );
   }
 

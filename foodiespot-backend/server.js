@@ -23,11 +23,11 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "foodiespot-super-s
 const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "1h";
 const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
 
-const UPLOADS_DIR = process.env.UPLOADS_DIR 
-  ? path.resolve(__dirname, process.env.UPLOADS_DIR) 
+const UPLOADS_DIR = process.env.UPLOADS_DIR
+  ? path.resolve(__dirname, process.env.UPLOADS_DIR)
   : path.join(__dirname, "uploads");
-const DATA_DIR = process.env.DATA_DIR 
-  ? path.resolve(__dirname, process.env.DATA_DIR) 
+const DATA_DIR = process.env.DATA_DIR
+  ? path.resolve(__dirname, process.env.DATA_DIR)
   : path.join(__dirname, "data");
 
 // Créer les dossiers s'ils n'existent pas
@@ -150,13 +150,13 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 // Routes - Health Check
 // ===========================================
 app.get("/health", (req, res) => {
-  res.json({ 
-    ok: true, 
+  res.json({
+    ok: true,
     status: "ok",
-    service: "FoodieSpot API", 
+    service: "FoodieSpot API",
     version: "2.0.0",
     timestamp: new Date().toISOString(),
-    ts: Date.now() 
+    ts: Date.now()
   });
 });
 
@@ -167,9 +167,9 @@ app.post("/auth/register", (req, res) => {
   const { email, password, firstName, lastName, phone } = req.body || {};
 
   if (!email || !password || !firstName || !lastName) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Email, mot de passe, prénom et nom sont requis" 
+    return res.status(400).json({
+      success: false,
+      message: "Email, mot de passe, prénom et nom sont requis"
     });
   }
 
@@ -222,7 +222,7 @@ app.post("/auth/login", (req, res) => {
 
   // Pour le mock: on accepte tout ou on vérifie dans users.json
   let user = users.find(u => u.email === email);
-  
+
   if (!user) {
     // Créer un utilisateur mock si n'existe pas
     user = {
@@ -322,7 +322,7 @@ app.get("/users/profile", authenticateToken, (req, res) => {
 app.put("/users/profile", authenticateToken, (req, res) => {
   const { firstName, lastName, phone } = req.body || {};
   const userIndex = users.findIndex(u => u.id === req.user.userId);
-  
+
   if (userIndex === -1) {
     return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
   }
@@ -362,7 +362,7 @@ app.get("/users/preferences", authenticateToken, (req, res) => {
   if (!user) {
     return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
   }
-  
+
   res.json({
     success: true,
     data: {
@@ -378,7 +378,7 @@ app.get("/users/preferences", authenticateToken, (req, res) => {
 app.patch("/users/preferences", authenticateToken, (req, res) => {
   const { theme, notificationsEnabled, language, soundEnabled, vibrationEnabled } = req.body;
   const userIndex = users.findIndex(u => u.id === req.user.userId);
-  
+
   if (userIndex === -1) {
     return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
   }
@@ -420,7 +420,7 @@ app.get("/users/addresses", authenticateToken, (req, res) => {
 
 app.post("/users/addresses", authenticateToken, (req, res) => {
   const { label, street, apartment, city, postalCode, country, latitude, longitude, isDefault, instructions } = req.body;
-  
+
   const userIndex = users.findIndex(u => u.id === req.user.userId);
   if (userIndex === -1) {
     return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
@@ -457,7 +457,7 @@ app.post("/users/addresses", authenticateToken, (req, res) => {
 
 app.put("/users/addresses/:addressId", authenticateToken, (req, res) => {
   const { label, street, apartment, city, postalCode, country, latitude, longitude, isDefault, instructions } = req.body;
-  
+
   const userIndex = users.findIndex(u => u.id === req.user.userId);
   if (userIndex === -1) {
     return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
@@ -516,7 +516,7 @@ app.delete("/users/addresses/:addressId", authenticateToken, (req, res) => {
 // ===========================================
 app.get("/geocode/reverse", (req, res) => {
   const { lat, lng } = req.query;
-  
+
   if (!lat || !lng) {
     return res.status(400).json({ success: false, message: "lat et lng requis" });
   }
@@ -527,7 +527,7 @@ app.get("/geocode/reverse", (req, res) => {
     "Rue du Faubourg Saint-Honoré", "Avenue Montaigne", "Rue de la Paix",
     "Boulevard Saint-Germain", "Rue de Rennes", "Avenue de l'Opéra"
   ];
-  
+
   const randomStreet = streets[Math.floor(Math.random() * streets.length)];
   const randomNumber = Math.floor(Math.random() * 150) + 1;
 
@@ -546,7 +546,7 @@ app.get("/geocode/reverse", (req, res) => {
 
 app.get("/geocode/search", (req, res) => {
   const { q } = req.query;
-  
+
   if (!q) {
     return res.status(400).json({ success: false, message: "Query requis" });
   }
@@ -572,7 +572,7 @@ app.get("/geocode/search", (req, res) => {
 // ===========================================
 app.patch("/user/profile", authenticateToken, (req, res) => {
   const userIndex = users.findIndex(u => u.id === req.user.userId);
-  
+
   if (userIndex === -1) {
     return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
   }
@@ -599,13 +599,13 @@ app.patch("/user/profile", authenticateToken, (req, res) => {
 
 app.post("/user/favorites/:restaurantId", authenticateToken, (req, res) => {
   const { restaurantId } = req.params;
-  
+
   if (!favorites[req.user.userId]) {
     favorites[req.user.userId] = [];
   }
 
   const index = favorites[req.user.userId].indexOf(restaurantId);
-  
+
   if (index === -1) {
     favorites[req.user.userId].push(restaurantId);
     saveJSON("favorites.json", favorites);
@@ -627,7 +627,7 @@ app.post("/upload", authenticateToken, upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: "Aucun fichier uploadé" });
   }
-  
+
   const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
   res.status(201).json({ success: true, url: fileUrl, data: { url: fileUrl, id: req.file.filename } });
 });
@@ -644,13 +644,13 @@ app.get("/categories", (req, res) => {
 // ===========================================
 app.get("/search/suggestions", (req, res) => {
   const { q } = req.query;
-  
+
   if (!q || q.length < 2) {
     return res.json({ success: true, data: [] });
   }
 
   const query = q.toString().toLowerCase();
-  
+
   // Suggestions basées sur les noms de restaurants
   const restaurantSuggestions = restaurants
     .filter(r => r.name.toLowerCase().includes(query))
@@ -671,7 +671,7 @@ app.get("/search/suggestions", (req, res) => {
     .slice(0, 2);
 
   // Suggestions basées sur les plats
-  const allDishes = Object.values(menus).flatMap(menu => 
+  const allDishes = Object.values(menus).flatMap(menu =>
     menu.flatMap(cat => cat.items.map(item => ({ ...item, restaurantId: cat.restaurantId })))
   );
   const dishSuggestions = allDishes
@@ -696,7 +696,7 @@ app.get("/search/popular", (req, res) => {
     { text: "Ramen", count: 350, icon: "🍜" },
     { text: "Indien", count: 320, icon: "🍛" }
   ];
-  
+
   res.json({ success: true, data: popularSearches });
 });
 
@@ -718,13 +718,13 @@ app.get("/search/trending", (req, res) => {
 
 app.get("/restaurants/search", optionalAuth, (req, res) => {
   const { q } = req.query;
-  
+
   if (!q) {
     return res.json({ success: true, data: [] });
   }
 
   const query = q.toString().toLowerCase();
-  let result = restaurants.filter(r => 
+  let result = restaurants.filter(r =>
     r.name.toLowerCase().includes(query) ||
     r.cuisine.some(c => c.toLowerCase().includes(query)) ||
     r.description.toLowerCase().includes(query) ||
@@ -745,7 +745,7 @@ app.get("/restaurants/search", optionalAuth, (req, res) => {
 // ===========================================
 app.get("/restaurants", optionalAuth, (req, res) => {
   const { category, cuisine, search, sortBy, lat, lng, radius, priceRange, rating, page = 1, limit = 20 } = req.query;
-  
+
   let result = [...restaurants];
 
   // Filtrer par catégorie
@@ -761,7 +761,7 @@ app.get("/restaurants", optionalAuth, (req, res) => {
   // Recherche textuelle
   if (search) {
     const q = search.toLowerCase();
-    result = result.filter(r => 
+    result = result.filter(r =>
       r.name.toLowerCase().includes(q) ||
       r.cuisine.some(c => c.toLowerCase().includes(q)) ||
       r.description.toLowerCase().includes(q)
@@ -781,10 +781,31 @@ app.get("/restaurants", optionalAuth, (req, res) => {
 
   // Calculer la distance si lat/lng fournis
   if (lat && lng) {
-    result = result.map(r => ({
-      ...r,
-      distance: calculateDistance(parseFloat(lat), parseFloat(lng), r.latitude, r.longitude)
-    }));
+    const userLat = parseFloat(lat);
+    const userLng = parseFloat(lng);
+    let allDistances = [];
+
+    result = result.map(r => {
+      const dist = calculateDistance(userLat, userLng, r.latitude, r.longitude);
+      allDistances.push(dist);
+      return { ...r, distance: dist };
+    });
+
+    const minDistance = Math.min(...allDistances);
+    // Si la distance minimale à tous les restaurants est énorme (user n'est pas à Paris)
+    // On simule des coordonnées extrêmement proches pour le développement/mock
+    if (minDistance > 20) {
+      result = result.map((r, index) => {
+        const offsetLat = (index + 1) * 0.005 * (index % 2 === 0 ? 1 : -1);
+        const offsetLng = (index + 1) * 0.005 * ((index + 1) % 2 === 0 ? 1 : -1);
+
+        const newLat = userLat + offsetLat;
+        const newLng = userLng + offsetLng;
+        const mockDist = calculateDistance(userLat, userLng, newLat, newLng);
+
+        return { ...r, distance: mockDist, latitude: newLat, longitude: newLng };
+      });
+    }
 
     // Filtrer par rayon
     if (radius) {
@@ -832,6 +853,20 @@ app.get("/restaurants", optionalAuth, (req, res) => {
   });
 });
 
+// ===========================================
+// Routes - Promos
+// ===========================================
+app.get("/promos/active", (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      title: "-30% sur votre première commande !",
+      code: "FOODIE30",
+      discount: "30%"
+    }
+  });
+});
+
 app.get("/restaurants/nearby", optionalAuth, (req, res) => {
   const { lat, lng, radius = 5 } = req.query;
 
@@ -857,7 +892,7 @@ app.get("/restaurants/nearby", optionalAuth, (req, res) => {
 
 app.get("/restaurants/:id", optionalAuth, (req, res) => {
   const restaurant = restaurants.find(r => r.id === req.params.id);
-  
+
   if (!restaurant) {
     return res.status(404).json({ success: false, message: "Restaurant non trouvé" });
   }
@@ -874,7 +909,32 @@ app.get("/restaurants/:id", optionalAuth, (req, res) => {
     .filter(r => r.restaurantId === req.params.id)
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 3);
-  
+
+  result.recentReviews = restaurantReviews;
+
+  res.json({ success: true, data: result });
+});
+
+app.get("/restaurants/:id", optionalAuth, (req, res) => {
+  const restaurant = restaurants.find(r => r.id === req.params.id);
+
+  if (!restaurant) {
+    return res.status(404).json({ success: false, message: "Restaurant non trouvé" });
+  }
+
+  let result = { ...restaurant };
+
+  if (req.user) {
+    const userFavs = favorites[req.user.userId] || [];
+    result.isFavorite = userFavs.includes(restaurant.id);
+  }
+
+  // Ajouter les avis récents
+  const restaurantReviews = reviews
+    .filter(r => r.restaurantId === req.params.id)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 3);
+
   result.recentReviews = restaurantReviews;
 
   res.json({ success: true, data: result });
@@ -882,7 +942,7 @@ app.get("/restaurants/:id", optionalAuth, (req, res) => {
 
 app.get("/restaurants/:id/menu", (req, res) => {
   const menu = menus[req.params.id];
-  
+
   if (!menu) {
     return res.status(404).json({ success: false, message: "Menu non trouvé" });
   }
@@ -892,9 +952,9 @@ app.get("/restaurants/:id/menu", (req, res) => {
 
 app.get("/restaurants/:id/reviews", (req, res) => {
   const { page = 1, limit = 10, sortBy = "recent" } = req.query;
-  
+
   let restaurantReviews = reviews.filter(r => r.restaurantId === req.params.id);
-  
+
   // Trier
   switch (sortBy) {
     case "rating_high":
@@ -911,8 +971,8 @@ app.get("/restaurants/:id/reviews", (req, res) => {
   // Stats
   const stats = {
     total: restaurantReviews.length,
-    average: restaurantReviews.length > 0 
-      ? Math.round(restaurantReviews.reduce((sum, r) => sum + r.rating, 0) / restaurantReviews.length * 10) / 10 
+    average: restaurantReviews.length > 0
+      ? Math.round(restaurantReviews.reduce((sum, r) => sum + r.rating, 0) / restaurantReviews.length * 10) / 10
       : 0,
     distribution: {
       5: restaurantReviews.filter(r => r.rating === 5).length,
@@ -927,8 +987,8 @@ app.get("/restaurants/:id/reviews", (req, res) => {
   const startIndex = (parseInt(page) - 1) * parseInt(limit);
   const paginatedReviews = restaurantReviews.slice(startIndex, startIndex + parseInt(limit));
 
-  res.json({ 
-    success: true, 
+  res.json({
+    success: true,
     data: paginatedReviews,
     stats,
     pagination: {
@@ -946,7 +1006,7 @@ app.get("/restaurants/:id/reviews", (req, res) => {
 app.get("/restaurants/:id/delivery-estimate", optionalAuth, (req, res) => {
   const { lat, lng } = req.query;
   const restaurant = restaurants.find(r => r.id === req.params.id);
-  
+
   if (!restaurant) {
     return res.status(404).json({ success: false, message: "Restaurant non trouvé" });
   }
@@ -955,9 +1015,9 @@ app.get("/restaurants/:id/delivery-estimate", optionalAuth, (req, res) => {
   let distance = 2.5; // Distance par défaut en km
   if (lat && lng) {
     distance = calculateDistance(
-      parseFloat(lat), 
-      parseFloat(lng), 
-      restaurant.latitude, 
+      parseFloat(lat),
+      parseFloat(lng),
+      restaurant.latitude,
       restaurant.longitude
     );
   }
@@ -975,7 +1035,7 @@ app.get("/restaurants/:id/delivery-estimate", optionalAuth, (req, res) => {
   }
 
   // Vérifier si livraison possible
-  const maxDeliveryRadius = 10; // km
+  const maxDeliveryRadius = 2000; // km
   const isDeliveryAvailable = distance <= maxDeliveryRadius;
 
   // Frais de service
@@ -996,8 +1056,8 @@ app.get("/restaurants/:id/delivery-estimate", optionalAuth, (req, res) => {
       minimumOrder: restaurant.minimumOrder || 10,
       freeDeliveryThreshold: restaurant.freeDeliveryThreshold || 25,
       isDeliveryAvailable,
-      message: isDeliveryAvailable 
-        ? null 
+      message: isDeliveryAvailable
+        ? null
         : `Désolé, ce restaurant ne livre pas au-delà de ${maxDeliveryRadius}km`,
       deliveryZones: [
         { radius: 3, fee: restaurant.deliveryFee, time: `${baseTime}-${baseTime + 10} min` },
@@ -1019,7 +1079,7 @@ app.get("/favorites", authenticateToken, (req, res) => {
 
 app.post("/favorites", authenticateToken, (req, res) => {
   const { restaurantId } = req.body;
-  
+
   if (!restaurantId) {
     return res.status(400).json({ success: false, message: "restaurantId requis" });
   }
@@ -1086,16 +1146,16 @@ app.post("/cart/validate", authenticateToken, (req, res) => {
   }
 
   if (unavailableItems.length > 0) {
-    return res.status(400).json({ 
-      success: false, 
+    return res.status(400).json({
+      success: false,
       message: `Articles non disponibles: ${unavailableItems.join(", ")}`,
       unavailableItems
     });
   }
 
   if (subtotal < (restaurant.minimumOrder || 0)) {
-    return res.status(400).json({ 
-      success: false, 
+    return res.status(400).json({
+      success: false,
       message: `Commande minimum: ${restaurant.minimumOrder}€`,
       minimumOrder: restaurant.minimumOrder,
       currentTotal: subtotal
@@ -1124,21 +1184,21 @@ app.post("/cart/validate", authenticateToken, (req, res) => {
 // ===========================================
 app.get("/orders", authenticateToken, (req, res) => {
   const { status, page = 1, limit = 10 } = req.query;
-  
+
   let userOrders = orders.filter(o => o.userId === req.user.userId);
-  
+
   if (status) {
     userOrders = userOrders.filter(o => o.status === status);
   }
-  
+
   userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  
+
   // Pagination
   const startIndex = (parseInt(page) - 1) * parseInt(limit);
   const paginatedOrders = userOrders.slice(startIndex, startIndex + parseInt(limit));
 
-  res.json({ 
-    success: true, 
+  res.json({
+    success: true,
     data: paginatedOrders,
     pagination: {
       page: parseInt(page),
@@ -1151,7 +1211,7 @@ app.get("/orders", authenticateToken, (req, res) => {
 
 app.get("/orders/:id", authenticateToken, (req, res) => {
   const order = orders.find(o => o.id === req.params.id && o.userId === req.user.userId);
-  
+
   if (!order) {
     return res.status(404).json({ success: false, message: "Commande non trouvée" });
   }
@@ -1170,7 +1230,7 @@ app.post("/orders", authenticateToken, (req, res) => {
   // Calculer les totaux
   const menu = menus[restaurantId];
   const allMenuItems = menu ? menu.flatMap(cat => cat.items) : [];
-  
+
   let subtotal = 0;
   const orderItems = items.map(item => {
     const menuItem = allMenuItems.find(m => m.id === item.menuItemId);
@@ -1185,7 +1245,7 @@ app.post("/orders", authenticateToken, (req, res) => {
 
   let deliveryFee = subtotal >= (restaurant.freeDeliveryThreshold || 25) ? 0 : restaurant.deliveryFee;
   const serviceFee = 0.99;
-  
+
   // Appliquer le code promo si présent
   let discount = 0;
   let promoApplied = null;
@@ -1250,7 +1310,7 @@ app.post("/orders", authenticateToken, (req, res) => {
 app.post("/orders/:id/cancel", authenticateToken, (req, res) => {
   const { reason } = req.body;
   const orderIndex = orders.findIndex(o => o.id === req.params.id && o.userId === req.user.userId);
-  
+
   if (orderIndex === -1) {
     return res.status(404).json({ success: false, message: "Commande non trouvée" });
   }
@@ -1277,7 +1337,7 @@ app.post("/orders/:id/cancel", authenticateToken, (req, res) => {
 // ===========================================
 app.get("/orders/:id/track", authenticateToken, (req, res) => {
   const order = orders.find(o => o.id === req.params.id && o.userId === req.user.userId);
-  
+
   if (!order) {
     return res.status(404).json({ success: false, message: "Commande non trouvée" });
   }
@@ -1338,54 +1398,54 @@ app.get("/orders/:id/track", authenticateToken, (req, res) => {
     // Estimation temps restant
     const remainingDistance = calculateDistance(currentLat, currentLng, deliveryLat, deliveryLng);
     const estimatedMinutes = Math.round(remainingDistance * 3); // ~3 min par km
-    
+
     trackingData.estimatedArrival = new Date(Date.now() + estimatedMinutes * 60 * 1000).toISOString();
     trackingData.estimatedMinutes = estimatedMinutes;
   }
 
   // Ajouter les étapes de suivi
   trackingData.steps = [
-    { 
-      key: "pending", 
-      label: "Commande reçue", 
+    {
+      key: "pending",
+      label: "Commande reçue",
       completed: true,
-      time: order.timeline.find(t => t.status === "pending")?.timestamp 
+      time: order.timeline.find(t => t.status === "pending")?.timestamp
     },
-    { 
-      key: "confirmed", 
-      label: "Confirmée par le restaurant", 
+    {
+      key: "confirmed",
+      label: "Confirmée par le restaurant",
       completed: ["confirmed", "preparing", "ready", "picked_up", "delivering", "delivered"].includes(order.status),
-      time: order.timeline.find(t => t.status === "confirmed")?.timestamp 
+      time: order.timeline.find(t => t.status === "confirmed")?.timestamp
     },
-    { 
-      key: "preparing", 
-      label: "En préparation", 
+    {
+      key: "preparing",
+      label: "En préparation",
       completed: ["preparing", "ready", "picked_up", "delivering", "delivered"].includes(order.status),
-      time: order.timeline.find(t => t.status === "preparing")?.timestamp 
+      time: order.timeline.find(t => t.status === "preparing")?.timestamp
     },
-    { 
-      key: "ready", 
-      label: "Prête", 
+    {
+      key: "ready",
+      label: "Prête",
       completed: ["ready", "picked_up", "delivering", "delivered"].includes(order.status),
-      time: order.timeline.find(t => t.status === "ready")?.timestamp 
+      time: order.timeline.find(t => t.status === "ready")?.timestamp
     },
-    { 
-      key: "picked_up", 
-      label: "Récupérée par le livreur", 
+    {
+      key: "picked_up",
+      label: "Récupérée par le livreur",
       completed: ["picked_up", "delivering", "delivered"].includes(order.status),
-      time: order.timeline.find(t => t.status === "picked_up")?.timestamp 
+      time: order.timeline.find(t => t.status === "picked_up")?.timestamp
     },
-    { 
-      key: "delivering", 
-      label: "En livraison", 
+    {
+      key: "delivering",
+      label: "En livraison",
       completed: ["delivering", "delivered"].includes(order.status),
-      time: order.timeline.find(t => t.status === "delivering")?.timestamp 
+      time: order.timeline.find(t => t.status === "delivering")?.timestamp
     },
-    { 
-      key: "delivered", 
-      label: "Livrée", 
+    {
+      key: "delivered",
+      label: "Livrée",
       completed: order.status === "delivered",
-      time: order.timeline.find(t => t.status === "delivered")?.timestamp 
+      time: order.timeline.find(t => t.status === "delivered")?.timestamp
     }
   ];
 
@@ -1430,7 +1490,7 @@ function simulateOrderProgress(orderId) {
         if (status === "delivered") {
           orders[orderIndex].actualDelivery = new Date().toISOString();
         }
-        
+
         saveJSON("orders.json", orders);
       }
     }, delay);
@@ -1441,14 +1501,14 @@ function simulateOrderProgress(orderId) {
 // Routes - Reviews (D - avec sous-notes et photos)
 // ===========================================
 app.post("/reviews", authenticateToken, upload.array("images", 5), (req, res) => {
-  const { 
-    restaurantId, 
-    orderId, 
-    rating, 
+  const {
+    restaurantId,
+    orderId,
+    rating,
     comment,
     qualityRating,
     speedRating,
-    presentationRating 
+    presentationRating
   } = req.body;
 
   if (!restaurantId || !rating) {
@@ -1506,7 +1566,7 @@ app.post("/reviews", authenticateToken, upload.array("images", 5), (req, res) =>
 
 app.post("/reviews/:id/like", authenticateToken, (req, res) => {
   const reviewIndex = reviews.findIndex(r => r.id === req.params.id);
-  
+
   if (reviewIndex === -1) {
     return res.status(404).json({ success: false, message: "Avis non trouvé" });
   }
@@ -1520,7 +1580,7 @@ app.post("/reviews/:id/like", authenticateToken, (req, res) => {
 app.post("/reviews/:id/report", authenticateToken, (req, res) => {
   const { reason } = req.body;
   const reviewIndex = reviews.findIndex(r => r.id === req.params.id);
-  
+
   if (reviewIndex === -1) {
     return res.status(404).json({ success: false, message: "Avis non trouvé" });
   }
@@ -1538,7 +1598,7 @@ app.post("/uploads", authenticateToken, upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: "Aucun fichier uploadé" });
   }
-  
+
   const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
   res.status(201).json({ success: true, data: { url: fileUrl, id: req.file.filename } });
 });
@@ -1547,7 +1607,7 @@ app.post("/uploads/multiple", authenticateToken, upload.array("files", 10), (req
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ success: false, message: "Aucun fichier uploadé" });
   }
-  
+
   const files = req.files.map(f => ({
     url: `${req.protocol}://${req.get("host")}/uploads/${f.filename}`,
     id: f.filename,
@@ -1625,7 +1685,7 @@ app.get("/notifications", authenticateToken, (req, res) => {
       createdAt: new Date(Date.now() - 172800000).toISOString()
     }
   ];
-  
+
   res.json({ success: true, data: notifications });
 });
 
@@ -1645,40 +1705,40 @@ app.post("/promos/validate", authenticateToken, (req, res) => {
   const { code, subtotal, restaurantId } = req.body;
 
   const promoCodes = {
-    "BIENVENUE30": { 
-      discount: 30, 
-      type: "percent", 
-      minOrder: 20, 
+    "BIENVENUE30": {
+      discount: 30,
+      type: "percent",
+      minOrder: 20,
       maxDiscount: 15,
       description: "30% de réduction (max 15€)",
       validUntil: "2026-12-31"
     },
-    "FOODIE10": { 
-      discount: 10, 
-      type: "percent", 
-      minOrder: 15, 
+    "FOODIE10": {
+      discount: 10,
+      type: "percent",
+      minOrder: 15,
       maxDiscount: 10,
       description: "10% de réduction (max 10€)",
       validUntil: "2026-12-31"
     },
-    "LIVRAISON": { 
-      discount: 100, 
-      type: "delivery", 
+    "LIVRAISON": {
+      discount: 100,
+      type: "delivery",
       minOrder: 25,
       description: "Livraison gratuite",
       validUntil: "2026-12-31"
     },
-    "NOUVEAU": { 
-      discount: 5, 
-      type: "fixed", 
+    "NOUVEAU": {
+      discount: 5,
+      type: "fixed",
       minOrder: 20,
       description: "5€ de réduction",
       validUntil: "2026-06-30"
     },
-    "WEEKEND": { 
-      discount: 15, 
-      type: "percent", 
-      minOrder: 30, 
+    "WEEKEND": {
+      discount: 15,
+      type: "percent",
+      minOrder: 30,
       maxDiscount: 12,
       description: "15% de réduction le weekend",
       validUntil: "2026-12-31",
@@ -1693,8 +1753,8 @@ app.post("/promos/validate", authenticateToken, (req, res) => {
   const promo = promoCodes[code.toUpperCase()];
 
   if (!promo) {
-    return res.status(400).json({ 
-      success: false, 
+    return res.status(400).json({
+      success: false,
       message: "Code promo invalide",
       code: code.toUpperCase()
     });
@@ -1702,8 +1762,8 @@ app.post("/promos/validate", authenticateToken, (req, res) => {
 
   // Vérifier la date de validité
   if (promo.validUntil && new Date(promo.validUntil) < new Date()) {
-    return res.status(400).json({ 
-      success: false, 
+    return res.status(400).json({
+      success: false,
       message: "Ce code promo a expiré",
       code: code.toUpperCase()
     });
@@ -1713,8 +1773,8 @@ app.post("/promos/validate", authenticateToken, (req, res) => {
   if (promo.daysValid) {
     const today = new Date().getDay();
     if (!promo.daysValid.includes(today)) {
-      return res.status(400).json({ 
-        success: false, 
+      return res.status(400).json({
+        success: false,
         message: "Ce code n'est valable que le weekend",
         code: code.toUpperCase()
       });
@@ -1723,8 +1783,8 @@ app.post("/promos/validate", authenticateToken, (req, res) => {
 
   // Vérifier le montant minimum
   if (subtotal && subtotal < promo.minOrder) {
-    return res.status(400).json({ 
-      success: false, 
+    return res.status(400).json({
+      success: false,
       message: `Commande minimum de ${promo.minOrder}€ requise`,
       code: code.toUpperCase(),
       minOrder: promo.minOrder,
@@ -1873,8 +1933,8 @@ app.post("/sync/orders", authenticateToken, (req, res) => {
 // 404 Handler
 // ===========================================
 app.use((req, res) => {
-  res.status(404).json({ 
-    success: false, 
+  res.status(404).json({
+    success: false,
     message: "Route non trouvée",
     path: req.path,
     method: req.method

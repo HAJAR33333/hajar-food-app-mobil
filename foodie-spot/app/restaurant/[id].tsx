@@ -7,9 +7,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { ArrowLeft, Clock, Heart, MapPin, Navigation, Phone, Share2, Star } from "lucide-react-native";
 import { DishCard } from "@/components/dish-card";
+import { useTranslation } from "react-i18next";
 
 export default function RestaurantScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
+    const { t } = useTranslation();
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
     const [menu, setMenu] = useState<Dish[]>([]);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -30,14 +32,14 @@ export default function RestaurantScreen() {
             await userAPI.toggleFavorite(id);
             setIsFavorite(!isFavorite);
         } catch (error) {
-            Alert.alert("Error", "Failed to update favorite status");
+            Alert.alert(t('home.error'), t('restaurant.error_favorite'));
         }
     };
 
     if (!restaurant) {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
-                <Text>Loading...</Text>
+                <Text>{t('restaurant.loading')}</Text>
             </SafeAreaView>
         );
     }
@@ -70,37 +72,37 @@ export default function RestaurantScreen() {
                             </Text>
                         </View>
                         <View style={styles.metaItem}>
-                            <Clock size={16} color="#666"/>
+                            <Clock size={16} color="#666" />
                             <Text style={styles.metaText}>
                                 {typeof restaurant?.deliveryTime === 'object' && restaurant?.deliveryTime !== null
-                                    ? `${(restaurant.deliveryTime as { min: number; max: number }).min}-${(restaurant.deliveryTime as { min: number; max: number }).max}` 
+                                    ? `${(restaurant.deliveryTime as { min: number; max: number }).min}-${(restaurant.deliveryTime as { min: number; max: number }).max}`
                                     : restaurant?.deliveryTime} min
                             </Text>
                         </View>
-                         <View style={styles.metaItem}>
-                            <MapPin size={16} color="#666"/>
+                        <View style={styles.metaItem}>
+                            <MapPin size={16} color="#666" />
                             <Text style={styles.metaText}>
                                 {restaurant?.distance} km
                             </Text>
                         </View>
                     </View>
                     <View style={styles.actions}>
-                         <TouchableOpacity style={styles.primaryButton}>
+                        <TouchableOpacity style={styles.primaryButton}>
                             <Navigation size={18} color="#fff" />
-                            <Text style={styles.primaryButtonText}>Itinéraire</Text>
+                            <Text style={styles.primaryButtonText}>{t('restaurant.directions')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.secondaryButton}>
                             <Phone size={18} color="#666" />
-                            <Text style={styles.secondaryButtonText}>Appeler</Text>
+                            <Text style={styles.secondaryButtonText}>{t('restaurant.call')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 <View style={styles.menu}>
-                    <Text style={styles.menuTitle}>Menu</Text>
+                    <Text style={styles.menuTitle}>{t('restaurant.menu')}</Text>
                     {menu.map((dish) => (
-                        <DishCard key={dish.id} dish={dish} onPress={() => router.push(`/dish/${dish.id}`)} />  
-                        ))}  
+                        <DishCard key={dish.id} dish={dish} onPress={() => router.push(`/dish/${dish.id}`)} />
+                    ))}
                 </View>
 
 
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     secondaryButton: {
-         flex: 1,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

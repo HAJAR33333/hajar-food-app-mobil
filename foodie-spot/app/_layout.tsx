@@ -16,6 +16,8 @@ import { useOffline } from '@/hooks/use-offline';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors } from '@/constants/theme';
 
+import '@/i18n'; // Import i18n configuration
+
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
@@ -113,9 +115,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ToastProvider>
-        <AuthProvider>
-          <RootLayoutContent />
-        </AuthProvider>
+          <AuthProvider>
+            <RootLayoutContent />
+          </AuthProvider>
         </ToastProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

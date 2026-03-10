@@ -1,4 +1,5 @@
 import { Coffee, IceCream2, Pizza, Sandwich, UtensilsCrossed } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const categories = [
@@ -10,9 +11,10 @@ const categories = [
 ];
 
 export const CategoryList: React.FC = () => {
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Catégories</Text>
+            <Text style={styles.title}>{t('home.categories')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {categories.map((category) => (
                     <TouchableOpacity key={category.label} style={styles.chip}>

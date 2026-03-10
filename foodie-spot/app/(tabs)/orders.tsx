@@ -5,8 +5,10 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 export default function OrdersScreen() {
+    const { t } = useTranslation();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -34,7 +36,7 @@ export default function OrdersScreen() {
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
             <View style={styles.header}>
-                <Text style={styles.title}>Mes Commandes</Text>
+                <Text style={styles.title}>{t('orders.title')}</Text>
             </View>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false} refreshControl={
@@ -43,7 +45,7 @@ export default function OrdersScreen() {
                 {orders.length === 0 && !loading ? (
                     <View style={styles.emptyState}>
                         <Text style={styles.emptyIcon}>ICON</Text>
-                        <Text style={styles.emptyText}>Aucune commande trouvée.</Text>
+                        <Text style={styles.emptyText}>{t('orders.no_orders')}</Text>
                     </View>
                 ) : (
                     orders.map((order) => (

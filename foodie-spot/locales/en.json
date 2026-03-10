@@ -1,0 +1,62 @@
+{
+    "home": {
+        "deliver_to": "Deliver to",
+        "locating": "Locating...",
+        "search_placeholder": "Search for a restaurant...",
+        "special_offer": "Special Offer",
+        "nearby": "Nearby",
+        "no_restaurant_found": "No restaurant found",
+        "loading_restaurants": "Loading restaurants...",
+        "error_loading": "Failed to load restaurants",
+        "error": "Error",
+        "categories": "categories"
+    },
+    "search": {
+        "title": "Search",
+        "search_placeholder": "Search for a restaurant...",
+        "results_found": "restaurants found"
+    },
+    "orders": {
+        "title": "My Orders",
+        "no_orders": "No orders found."
+    },
+    "profile": {
+        "title": "Profile",
+        "stats": "Stats",
+        "menu": "Menu"
+    },
+    "notifications": {
+        "title": "Test Notifications",
+        "simulator_warning": "Simulator mode: Local notifications work, but Expo push tokens require a physical device.",
+        "simulator": "Simulator",
+        "physical_device": "Physical device",
+        "permissions_granted": "Permissions: Granted",
+        "permissions_denied": "Permissions: Not granted",
+        "badge_count": "Badge count",
+        "actions": "Actions",
+        "init": "Initialize notifications",
+        "send_immediate": "Immediate notification",
+        "schedule_5s": "Schedule (5 seconds)",
+        "schedule_30s": "Schedule (30 seconds)",
+        "set_badge": "Badge: 5",
+        "clear_badge": "Clear badge",
+        "test_results": "Test results",
+        "clear": "Clear",
+        "no_results": "No results yet",
+        "no_results_sub": "Use the buttons above to test notifications"
+    },
+    "restaurant": {
+        "loading": "Loading...",
+        "directions": "Directions",
+        "call": "Call",
+        "menu": "Menu",
+        "error_favorite": "Failed to update favorite status"
+    },
+    "common": {
+        "home": "Home",
+        "search": "Search",
+        "orders": "Orders",
+        "profile": "Profile",
+        "notifications": "Notifications"
+    }
+}

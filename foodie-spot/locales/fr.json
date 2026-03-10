@@ -1,0 +1,69 @@
+{
+    "home": {
+        "deliver_to": "Livraison à",
+        "locating": "Localisation...",
+        "search_placeholder": "Rechercher un restaurant...",
+        "special_offer": "Offre spéciale",
+        "nearby": "À proximité",
+        "no_restaurant_found": "Aucun restaurant trouvé",
+        "loading_restaurants": "Chargement des restaurants...",
+        "error_loading": "Échec du chargement des restaurants",
+        "error": "Erreur",
+        "categories": "catégories"
+    },
+    "search": {
+        "title": "Recherche",
+        "search_placeholder": "Rechercher un restaurant...",
+        "results_found": "restaurants trouvés"
+    },
+    "orders": {
+        "title": "Mes Commandes",
+        "no_orders": "Aucune commande trouvée."
+    },
+    "profile": {
+        "title": "Profil",
+        "commands": "Commandes",
+        "favorites": "Favoris",
+        "reviews": "Avis",
+        "my_addresses": "Mes adresses",
+        "my_favorites": "Mes favoris",
+        "history": "Historique",
+        "support": "Support",
+        "share_app": "Partager l'app",
+        "logout": "Déconnexion"
+    },
+    "notifications": {
+        "title": "Test Notifications",
+        "simulator_warning": "Mode simulateur: Les notifications locales fonctionnent, mais les push tokens Expo nécessitent un appareil physique.",
+        "simulator": "Simulateur",
+        "physical_device": "Appareil physique",
+        "permissions_granted": "Permissions: Accordées",
+        "permissions_denied": "Permissions: Non accordées",
+        "badge_count": "Badge count",
+        "actions": "Actions",
+        "init": "Initialiser les notifications",
+        "send_immediate": "Notification immédiate",
+        "schedule_5s": "Programmer (5 secondes)",
+        "schedule_30s": "Programmer (30 secondes)",
+        "set_badge": "Badge: 5",
+        "clear_badge": "Effacer badge",
+        "test_results": "Résultats des tests",
+        "clear": "Effacer",
+        "no_results": "Aucun résultat pour le moment",
+        "no_results_sub": "Utilisez les boutons ci-dessus pour tester les notifications"
+    },
+    "restaurant": {
+        "loading": "Chargement...",
+        "directions": "Itinéraire",
+        "call": "Appeler",
+        "menu": "Menu",
+        "error_favorite": "Échec de la mise à jour du statut favori"
+    },
+    "common": {
+        "home": "Accueil",
+        "search": "Recherche",
+        "orders": "Commandes",
+        "profile": "Profil",
+        "notifications": "Notifications"
+    }
+}

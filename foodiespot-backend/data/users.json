@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "id": "07304f6e-e1b7-493c-8f52-e2a8e79e0161",
+    "email": "rachachhajar@gmail.com",
+    "password": "123456",
+    "firstName": "Hajar",
+    "lastName": "Rachach",
+    "phone": "0743630424",
+    "avatar": "",
+    "addresses": [],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-10T12:10:24.530Z"
+  },
+  {
+    "id": "c21a6da1-fbd6-45f4-b237-247d63c7bfa2",
+    "email": "bb.tt@.com",
+    "firstName": "bb.tt",
+    "lastName": "Demo",
+    "phone": "",
+    "avatar": "",
+    "addresses": [
+      {
+        "id": "ba279e5e-2cf9-492e-ab57-d169e0954300",
+        "label": "Maison",
+        "street": "123 Rue de Paris",
+        "city": "Paris",
+        "postalCode": "75001",
+        "country": "France",
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "isDefault": true
+      }
+    ],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-10T12:26:14.301Z",
+    "password": "123456"
+  }
+]
