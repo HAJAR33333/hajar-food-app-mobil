@@ -1,5 +1,6 @@
 // services/auth.ts
 
+import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import api from './api';
 import log from './logger';
@@ -69,6 +70,9 @@ export interface AuthState {
 class AuthService {
   async getAccessToken(): Promise<string | null> {
     try {
+      if (Platform.OS === 'web') {
+        return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+      }
       return await SecureStore.getItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
     } catch (error) {
       log.error('Failed to get access token:', error);
@@ -78,6 +82,10 @@ class AuthService {
 
   async setAccessToken(token: string): Promise<void> {
     try {
+      if (Platform.OS === 'web') {
+        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, token);
+        return;
+      }
       await SecureStore.setItemAsync(STORAGE_KEYS.ACCESS_TOKEN, token);
     } catch (error) {
       log.error('Failed to set access token:', error);
@@ -87,6 +95,9 @@ class AuthService {
 
   async getRefreshToken(): Promise<string | null> {
     try {
+      if (Platform.OS === 'web') {
+        return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+      }
       return await SecureStore.getItemAsync(STORAGE_KEYS.REFRESH_TOKEN);
     } catch (error) {
       log.error('Failed to get refresh token:', error);
@@ -96,6 +107,10 @@ class AuthService {
 
   async setRefreshToken(token: string): Promise<void> {
     try {
+      if (Platform.OS === 'web') {
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, token);
+        return;
+      }
       await SecureStore.setItemAsync(STORAGE_KEYS.REFRESH_TOKEN, token);
     } catch (error) {
       log.error('Failed to set refresh token:', error);
@@ -105,6 +120,13 @@ class AuthService {
 
   async clearTokens(): Promise<void> {
     try {
+      if (Platform.OS === 'web') {
+        localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.USER);
+        return;
+      }
+
       await SecureStore.deleteItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
       await SecureStore.deleteItemAsync(STORAGE_KEYS.REFRESH_TOKEN);
       await SecureStore.deleteItemAsync(STORAGE_KEYS.USER);
@@ -115,7 +137,14 @@ class AuthService {
 
   async getStoredUser(): Promise<User | null> {
     try {
-      const userJson = await SecureStore.getItemAsync(STORAGE_KEYS.USER);
+      let userJson: string | null = null;
+
+      if (Platform.OS === 'web') {
+        userJson = localStorage.getItem(STORAGE_KEYS.USER);
+      } else {
+        userJson = await SecureStore.getItemAsync(STORAGE_KEYS.USER);
+      }
+
       if (userJson) {
         return JSON.parse(userJson);
       }
@@ -128,7 +157,14 @@ class AuthService {
 
   async setStoredUser(user: User): Promise<void> {
     try {
-      await SecureStore.setItemAsync(STORAGE_KEYS.USER, JSON.stringify(user));
+      const userJson = JSON.stringify(user);
+
+      if (Platform.OS === 'web') {
+        localStorage.setItem(STORAGE_KEYS.USER, userJson);
+        return;
+      }
+
+      await SecureStore.setItemAsync(STORAGE_KEYS.USER, userJson);
     } catch (error) {
       log.error('Failed to set stored user:', error);
       throw error;
@@ -141,6 +177,10 @@ class AuthService {
         this.getAccessToken(),
         this.getStoredUser(),
       ]);
+
+      console.log('AUTH STATE TOKEN =', token);
+      console.log('AUTH STATE USER =', user);
+
       const isAuthenticated = !!token && !!user;
       return { user: isAuthenticated ? user : null, isAuthenticated };
     } catch (error) {
@@ -149,43 +189,112 @@ class AuthService {
     }
   }
 
+  // async login(credentials: LoginCredentials): Promise<{ user: User; tokens: AuthTokens }> {
+  //   try {
+  //     log.info('🔐 [Auth] Attempting login for:', credentials.email);
+
+  //     const response = await api.post('/auth/login', credentials);
+  //     const data = response.data.data || response.data;
+
+  //     const user: User = {
+  //       ...data.user,
+  //       name: data.user.name || `${data.user.firstName || ''} ${data.user.lastName || ''}`.trim(),
+  //       addresses: data.user.addresses || [],
+  //       favoriteRestaurants: data.user.favoriteRestaurants || [],
+  //     };
+
+  //     const tokens: AuthTokens = {
+  //       accessToken: data.accessToken || data.token,
+  //       refreshToken: data.refreshToken,
+  //       expiresIn: data.expiresIn || 3600,
+  //     };
+
+  //     await this.setAccessToken(tokens.accessToken);
+  //     if (tokens.refreshToken) {
+  //       await this.setRefreshToken(tokens.refreshToken);
+  //     }
+  //     await this.setStoredUser(user);
+
+  //     log.info('✅ [Auth] Login successful for:', user.email);
+  //     log.debug('Received tokens:', tokens);
+  //     return { user, tokens };
+  //   } catch (error: any) {
+  //     log.error('❌ [Auth] Login failed:', error.message);
+  //     if (error.response?.status === 401) {
+  //       throw new Error('Email ou mot de passe incorrect');
+  //     }
+  //     throw new Error('Erreur de connexion. Veuillez réessayer.');
+  //   }
+  // }
+
   async login(credentials: LoginCredentials): Promise<{ user: User; tokens: AuthTokens }> {
-    try {
-      log.info('🔐 [Auth] Attempting login for:', credentials.email);
+  try {
+    const DEV_BYPASS_LOGIN = __DEV__;
 
-      const response = await api.post('/auth/login', credentials);
-      const data = response.data.data || response.data;
-
+    if (DEV_BYPASS_LOGIN) {
       const user: User = {
-        ...data.user,
-        name: data.user.name || `${data.user.firstName || ''} ${data.user.lastName || ''}`.trim(),
-        addresses: data.user.addresses || [],
-        favoriteRestaurants: data.user.favoriteRestaurants || [],
+        id: 'dev-user-1',
+        email: credentials.email || 'test@example.com',
+        firstName: 'Demo',
+        lastName: 'User',
+        name: 'Demo User',
+        phone: '',
+        avatar: '',
+        addresses: [],
+        favoriteRestaurants: [],
+        notificationsEnabled: true,
+        createdAt: new Date().toISOString(),
       };
 
       const tokens: AuthTokens = {
-        accessToken: data.accessToken || data.token,
-        refreshToken: data.refreshToken,
-        expiresIn: data.expiresIn || 3600,
+        accessToken: 'dev-access-token',
+        refreshToken: 'dev-refresh-token',
+        expiresIn: 3600,
       };
 
       await this.setAccessToken(tokens.accessToken);
-      if (tokens.refreshToken) {
-        await this.setRefreshToken(tokens.refreshToken);
-      }
+      await this.setRefreshToken(tokens.refreshToken);
       await this.setStoredUser(user);
 
-      log.info('✅ [Auth] Login successful for:', user.email);
-      log.debug('Received tokens:', tokens);
+      log.info('✅ [Auth] DEV mock login successful for:', user.email);
       return { user, tokens };
-    } catch (error: any) {
-      log.error('❌ [Auth] Login failed:', error.message);
-      if (error.response?.status === 401) {
-        throw new Error('Email ou mot de passe incorrect');
-      }
-      throw new Error('Erreur de connexion. Veuillez réessayer.');
     }
+
+    log.info('🔐 [Auth] Attempting login for:', credentials.email);
+
+    const response = await api.post('/auth/login', credentials);
+    const data = response.data.data || response.data;
+
+    const user: User = {
+      ...data.user,
+      name: data.user.name || `${data.user.firstName || ''} ${data.user.lastName || ''}`.trim(),
+      addresses: data.user.addresses || [],
+      favoriteRestaurants: data.user.favoriteRestaurants || [],
+    };
+
+    const tokens: AuthTokens = {
+      accessToken: data.accessToken || data.token,
+      refreshToken: data.refreshToken,
+      expiresIn: data.expiresIn || 3600,
+    };
+
+    await this.setAccessToken(tokens.accessToken);
+    if (tokens.refreshToken) {
+      await this.setRefreshToken(tokens.refreshToken);
+    }
+    await this.setStoredUser(user);
+
+    log.info('✅ [Auth] Login successful for:', user.email);
+    log.debug('Received tokens:', tokens);
+    return { user, tokens };
+  } catch (error: any) {
+    log.error('❌ [Auth] Login failed:', error.message);
+    if (error.response?.status === 401) {
+      throw new Error('Email ou mot de passe incorrect');
+    }
+    throw new Error('Erreur de connexion. Veuillez réessayer.');
   }
+}
 
   async register(data: RegisterData): Promise<{ user: User; tokens: AuthTokens }> {
     try {
