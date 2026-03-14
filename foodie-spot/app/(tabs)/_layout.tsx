@@ -53,6 +53,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="alarm.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="Cart"
+        options={{
+          title: t('common.cart'),
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="bag" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

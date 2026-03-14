@@ -1,30 +1,67 @@
 // app/(auth)/login.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, ScrollView } from 'react-native';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { 
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+  ScrollView
+} from 'react-native';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useAuth } from '@/contexts/auth-context';
 import { Colors } from '@/constants/theme';
 
 export default function LoginScreen() {
   const { login, isLoading, error } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState('');
 
   const handleLogin = async () => {
-    if (!email.trim()) { setLocalError('Veuillez entrer votre email'); return; }
-    if (!email.includes('@')) { setLocalError('Email invalide'); return; }
-    if (!password) { setLocalError('Veuillez entrer votre mot de passe'); return; }
+    if (isLoading) return;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      setLocalError('Veuillez entrer votre email');
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setLocalError('Veuillez entrer un email valide');
+      return;
+    }
+
+    if (!password) {
+      setLocalError('Veuillez entrer votre mot de passe');
+      return;
+    }
+
+    if (password.length < 6) {
+      setLocalError('Le mot de passe doit contenir au moins 6 caractères');
+      return;
+    }
 
     setLocalError('');
+
     try {
-      await login({ email: email.trim(), password });
+      await login({
+        email: email.trim(),
+        password,
+      });
     } catch (err) {
       console.log('Login error handled');
+      setLocalError('Impossible de se connecter. Réessayez.');
     }
   };
 
@@ -32,49 +69,121 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.logoContainer}>
             <Text style={styles.logo}>🍔</Text>
             <Text style={styles.title}>FoodieSpot</Text>
-            <Text style={styles.subtitle}>Connectez-vous pour commander</Text>
+            <Text style={styles.subtitle}>
+              Connectez-vous pour commander
+            </Text>
           </View>
 
-          {displayError && (
+          {displayError ? (
             <View style={styles.errorContainer}>
               <Text style={styles.errorText}>{displayError}</Text>
             </View>
-          )}
+          ) : null}
 
           <View style={styles.form}>
+            {/* EMAIL */}
             <View style={styles.inputContainer}>
               <Mail size={20} color="#999" />
-              <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#999" value={email} onChangeText={t => { setEmail(t); setLocalError(''); }} keyboardType="email-address" autoCapitalize="none" editable={!isLoading} />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#999"
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setLocalError('');
+                }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!isLoading}
+              />
             </View>
 
+            {/* PASSWORD */}
             <View style={styles.inputContainer}>
               <Lock size={20} color="#999" />
-              <TextInput style={styles.input} placeholder="Mot de passe" placeholderTextColor="#999" value={password} onChangeText={t => { setPassword(t); setLocalError(''); }} secureTextEntry={!showPassword} editable={!isLoading} />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                {showPassword ? <EyeOff size={20} color="#999" /> : <Eye size={20} color="#999" />}
+
+              <TextInput
+                style={styles.input}
+                placeholder="Mot de passe"
+                placeholderTextColor="#999"
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setLocalError('');
+                }}
+                secureTextEntry={!showPassword}
+                editable={!isLoading}
+              />
+
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff size={20} color="#999" />
+                ) : (
+                  <Eye size={20} color="#999" />
+                )}
               </TouchableOpacity>
             </View>
 
+            {/* FORGOT PASSWORD */}
             <TouchableOpacity style={styles.forgotButton}>
-              <Text style={styles.forgotText}>Mot de passe oublié ?</Text>
+              <Text style={styles.forgotText}>
+                Mot de passe oublié ?
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, isLoading && styles.buttonDisabled]} onPress={handleLogin} disabled={isLoading}>
-              {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Se connecter</Text>}
+            {/* LOGIN BUTTON */}
+            <TouchableOpacity
+              style={[
+                styles.button,
+                isLoading && styles.buttonDisabled,
+              ]}
+              onPress={handleLogin}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>
+                  Se connecter
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.registerButton} onPress={() => router.push('/(auth)/register')} disabled={isLoading}>
-            <Text style={styles.registerText}>Pas encore de compte ? <Text style={styles.registerTextBold}>S'inscrire</Text></Text>
+          {/* REGISTER */}
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={() => router.push('/register')}
+            disabled={isLoading}
+          >
+            <Text style={styles.registerText}>
+              Pas encore de compte ?{' '}
+              <Text style={styles.registerTextBold}>
+                S'inscrire
+              </Text>
+            </Text>
           </TouchableOpacity>
 
+          {/* DEMO */}
           <View style={styles.demoHint}>
-            <Text style={styles.demoHintText}>💡 Pour tester, utilisez n'importe quel email/mot de passe</Text>
+            <Text style={styles.demoHintText}>
+              💡 Pour tester, utilisez n'importe quel email/mot de passe
+            </Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

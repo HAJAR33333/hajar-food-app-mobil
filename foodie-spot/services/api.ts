@@ -14,8 +14,10 @@ export interface Promo {
     code: string;
     discount?: string;
 }
-
+    console.log('CONFIG API_URL =', config.API_URL);
+    log.info('CONFIG API_URL = ' + config.API_URL);
 const api = axios.create({
+
     baseURL: config.API_URL,
     timeout: 10000,
     headers: {
@@ -328,5 +330,24 @@ export const uploadAPI = {
         }
     }
 }
+
+export interface CreateReviewPayload {
+    orderId: string;
+    rating: number;
+    comment?: string;
+    photos?: string[];
+}
+
+export const reviewAPI = {
+    async createReview(payload: CreateReviewPayload): Promise<any> {
+        try {
+            const response = await api.post('/reviews', payload);
+            return response.data?.data || response.data;
+        } catch (error) {
+            log.error('Failed to create review', error);
+            throw error;
+        }
+    }
+};
 
 export default api;

@@ -1,4 +1,5 @@
 export interface Restaurant {
+    location: { latitude: any; longitude: any; };
     id: string;
     name: string;
     cuisine: string;
