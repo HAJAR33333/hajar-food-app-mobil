@@ -165,10 +165,9 @@ export const restaurantAPI = {
             return response.data?.data || response.data;
         } catch (error) {
             log.warn('Failed to fetch dynamic promo, using fallback');
-            // Fallback en dur si l'API échoue
             return {
-                title: "-30% sur votre commande",
-                code: "FOODIE30"
+                title: "-40% sur votre commande",
+                code: "FOODIE40"
             };
         }
     },
