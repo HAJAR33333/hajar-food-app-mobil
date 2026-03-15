@@ -1,140 +1,163 @@
 # 🍔 FoodieSpot Mock Backend
 
-Backend API mock pour l'application FoodieSpot - Cours React Native ESTIAM E4.
+Bienvenue dans l'envers du décor de **FoodieSpot** ! 👋
+Ce projet est un faux backend (mock API) conçu avec amour pour vous accompagner tout au long du cours React Native à l'ESTIAM (E4). Son but ? Vous permettre de développer l'application mobile sans vous soucier de coder un vrai serveur en parallèle. Tout est déjà prêt pour vous ! 🚀
 
-## 🚀 Installation
+---
+
+## 🚀 Prêt à démarrer ?
+
+C'est super simple de lancer la machine. Suivez le guide :
 
 ```bash
-# Installer les dépendances
+# 1. On installe les dépendances (le classique)
 npm install
 
-# Copier le fichier d'environnement
+# 2. On configure l'environnement (une petite copie suffit !)
 cp .env.example .env
 
-# Lancer le serveur
+# 3. Et on allume les fourneaux ! (Port 4000 par défaut)
 npm start
 
-# Ou en mode développement (auto-reload)
+# 💡 Astuce de pro : Si vous voulez que le serveur redémarre tout seul à chaque modification :
 npm run dev
 ```
 
-Le serveur démarre sur `http://localhost:4000`
+Une fois lancé, votre beau serveur local vous attend sagement sur `http://localhost:4000`. 🎉
 
-## 📡 Endpoints API
+---
 
-### 🔐 Authentification
+## 📡 Le Menu (Endpoints API)
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| POST | `/auth/register` | Inscription | ❌ |
-| POST | `/auth/login` | Connexion | ❌ |
-| POST | `/auth/refresh` | Rafraîchir le token | ❌ |
-| POST | `/auth/logout` | Déconnexion | ✅ |
-| POST | `/auth/forgot-password` | Mot de passe oublié | ❌ |
+Voici toutes les routes que vous pouvez utiliser dans votre application React Native. Servez-vous !
 
-### 👤 Utilisateur
+### 🔐 Authentification & Sécurité
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/users/profile` | Profil utilisateur | ✅ |
-| PUT | `/users/profile` | Modifier profil | ✅ |
-| POST | `/users/avatar` | Upload avatar | ✅ |
-| GET | `/users/addresses` | Liste adresses | ✅ |
-| POST | `/users/addresses` | Ajouter adresse | ✅ |
-| DELETE | `/users/addresses/:id` | Supprimer adresse | ✅ |
+La base de la base. Pour que vos utilisateurs puissent se connecter à leur compte.
 
-### 🍽️ Restaurants
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| POST | `/auth/register` | Créer un compte tout neuf | ❌ |
+| POST | `/auth/login` | Se connecter | ❌ |
+| POST | `/auth/refresh` | Obtenir un nouveau token tout frais | ❌ |
+| POST | `/auth/logout` | Se déconnecter (au revoir !) | ✅ |
+| POST | `/auth/forgot-password` | Oups, j'ai oublié mon mot de passe | ❌ |
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/categories` | Liste catégories | ❌ |
-| GET | `/restaurants` | Liste restaurants | ❌* |
-| GET | `/restaurants/nearby` | Restaurants proches | ❌* |
-| GET | `/restaurants/:id` | Détail restaurant | ❌* |
-| GET | `/restaurants/:id/menu` | Menu du restaurant | ❌ |
-| GET | `/restaurants/:id/reviews` | Avis du restaurant | ❌ |
+### 👤 Gestion du Profil
 
-*Auth optionnelle pour afficher les favoris
+Parce que chaque utilisateur est unique.
 
-### ❤️ Favoris
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| GET | `/users/profile` | Récupérer les infos du profil | ✅ |
+| PUT | `/users/profile` | Mettre à jour ses petites infos | ✅ |
+| POST | `/users/avatar` | Changer sa photo de profil | ✅ |
+| GET | `/users/addresses` | Consulter son carnet d'adresses | ✅ |
+| POST | `/users/addresses` | Ajouter une nouvelle adresse | ✅ |
+| DELETE | `/users/addresses/:id` | Oups, je n'habite plus ici | ✅ |
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/favorites` | Liste favoris | ✅ |
-| POST | `/favorites` | Ajouter favori | ✅ |
-| DELETE | `/favorites/:restaurantId` | Retirer favori | ✅ |
+### 🍽️ Les Restaurants
 
-### 🛒 Commandes
+C'est quand même le cœur du projet, non ?
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| GET | `/orders` | Historique commandes | ✅ |
-| GET | `/orders/:id` | Détail commande | ✅ |
-| POST | `/orders` | Créer commande | ✅ |
-| POST | `/orders/:id/cancel` | Annuler commande | ✅ |
-| POST | `/cart/validate` | Valider panier | ✅ |
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| GET | `/categories` | Voir les styles de cuisine | ❌ |
+| GET | `/restaurants` | Lister tous les restos | ❌* |
+| GET | `/restaurants/nearby` | Trouver ce qu'il y a autour de moi | ❌* |
+| GET | `/restaurants/:id` | Voir la fiche d'un resto | ❌* |
+| GET | `/restaurants/:id/menu` | Miam, qu'est-ce qu'on mange ? | ❌ |
+| GET | `/restaurants/:id/reviews` | Ce que les autres en pensent | ❌ |
 
-### ⭐ Avis
+*(L'authentification est optionnelle ici, mais si vous l'envoyez, le serveur inclura l'info pour savoir si le resto est dans les favoris de l'utilisateur !)*
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| POST | `/reviews` | Créer un avis (+ images) | ✅ |
+### ❤️ Les Favoris
+
+Pour garder les bonnes adresses sous le coude.
+
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| GET | `/favorites` | Voir mes restos préférés | ✅ |
+| POST | `/favorites` | Ajouter un gros coup de cœur | ✅ |
+| DELETE | `/favorites/:restaurantId` | Retirer des favoris | ✅ |
+
+### 🛒 Commandes & Panier
+
+Passons aux choses sérieuses : commander à manger !
+
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| GET | `/orders` | L'historique de mes commandes | ✅ |
+| GET | `/orders/:id` | Le détail d'une commande précise | ✅ |
+| POST | `/orders` | Confirmer une nouvelle commande | ✅ |
+| POST | `/orders/:id/cancel` | Finalement, j'ai changé d'avis... | ✅ |
+| POST | `/cart/validate` | Vérifier que mon panier est valide | ✅ |
+
+### ⭐ Laisser un Avis
+
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| POST | `/reviews` | Partager son expérience (+ photos !) | ✅ |
 
 ### 📤 Upload
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| POST | `/uploads` | Upload fichier | ✅ |
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| POST | `/uploads` | Uploader un fichier sur le serveur | ✅ |
 
-### 🔔 Notifications
+### 🔔 Notifications Push
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| POST | `/notifications/register-token` | Enregistrer token push | ✅ |
-| GET | `/notifications` | Liste notifications | ✅ |
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| POST | `/notifications/register-token` | Lier le téléphone pour les alertes | ✅ |
+| GET | `/notifications` | Voir l'historique des notifications | ✅ |
 
-### 🎟️ Promotions
+### 🎟️ Codes Promos
 
-| Méthode | Endpoint | Description | Auth |
-|---------|----------|-------------|------|
-| POST | `/promos/validate` | Valider code promo | ✅ |
+| Méthode | Endpoint | Ce que ça fait | Auth Requise ? |
+|---------|----------|----------------|----------------|
+| POST | `/promos/validate` | Vérifier si un code est bon | ✅ |
 
-## 📝 Exemples de requêtes
+---
 
-### Inscription
+## 📝 Exemples rapides avec cURL
+
+Parfois, un bon exemple vaut mieux qu'un long discours. Voici quelques requêtes pour tester l'API directement depuis votre terminal !
+
+**Créer un compte :**
 ```bash
 curl -X POST http://localhost:4000/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"123456","firstName":"John","lastName":"Doe"}'
 ```
 
-### Connexion
+**Se connecter :**
 ```bash
 curl -X POST http://localhost:4000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"123456"}'
 ```
 
-### Liste des restaurants
+**Voir ce qu'il y a de bon à manger :**
 ```bash
 curl http://localhost:4000/restaurants
 ```
 
-### Restaurants par catégorie
+**Filtrer par catégorie (ex: pizza) :**
 ```bash
 curl "http://localhost:4000/restaurants?category=pizza"
 ```
 
-### Restaurants à proximité
+**Trouver un resto près de chez moi (avec coordonnées GPS) :**
 ```bash
 curl "http://localhost:4000/restaurants/nearby?lat=48.8566&lng=2.3522&radius=5"
 ```
 
-### Créer une commande (avec token)
+**Passer commande (n'oubliez pas votre Token JWT !) :**
 ```bash
 curl -X POST http://localhost:4000/orders \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer VOTRE_TOKEN_ICI" \
   -d '{
     "restaurantId": "rest-001",
     "items": [{"menuItemId": "item-001", "quantity": 2}],
@@ -143,50 +166,68 @@ curl -X POST http://localhost:4000/orders \
   }'
 ```
 
-## 🎯 Codes promo disponibles
+---
 
-| Code | Réduction | Commande min |
-|------|-----------|--------------|
-| `BIENVENUE30` | 30% (max 15€) | 20€ |
-| `FOODIE10` | 10% (max 10€) | 15€ |
-| `LIVRAISON` | Livraison gratuite | 25€ |
+## 🎯 Petits cadeaux : Les Codes Promos
 
-## 📂 Structure des données
+Testez votre logique de panier avec ces codes promo fonctionnels :
 
-```
+| Code Secret | Ce que ça vous fait gagner | À partir de... |
+|-------------|----------------------------|----------------|
+| `BIENVENUE30` | 30% de réduction (jusqu'à 15€) | 20€ d'achat |
+| `FOODIE10` | 10% de réduction (jusqu'à 10€) | 15€ d'achat |
+| `LIVRAISON` | Les frais de port offerts ! | 25€ d'achat |
+
+---
+
+## 📂 Où sont rangées les "fausses" bases de données ?
+
+Puisque c'est un mock, il n'y a pas de vraie base de données comme MySQL ou MongoDB. Tout est stocké dans de simples fichiers JSON dans le dossier `data/`. Vous pouvez aller jeter un œil, voire modifier des trucs à la main si besoin ! 👀
+
+```text
 data/
-├── restaurants.json   # Liste des restaurants
-├── menus.json         # Menus par restaurant
-├── categories.json    # Catégories
-├── users.json         # Utilisateurs
-├── orders.json        # Commandes
-├── reviews.json       # Avis
-├── favorites.json     # Favoris par user
-└── push-tokens.json   # Tokens push
+├── restaurants.json   # Tous les restaurants
+├── menus.json         # Les plats proposés par chaque resto
+├── categories.json    # Les catégories de cuisine
+├── users.json         # Les comptes utilisateurs inscrits
+├── orders.json        # L'historique des commandes
+├── reviews.json       # Les avis laissés
+├── favorites.json     # Qui a liké quoi
+└── push-tokens.json   # Les tokens pour les notifications
 ```
 
-## 🔧 Configuration
+---
 
-Variables d'environnement (.env):
+## 🔧 Configuration (le fichier .env)
+
+Si jamais vous voulez bidouiller sous le capot, voici ce que vous pouvez régler dans votre `.env` :
 
 ```env
 PORT=4000
-JWT_SECRET=your-secret-key
-JWT_REFRESH_SECRET=your-refresh-secret
+JWT_SECRET=ceci-est-votre-super-secret-key-personne-ne-doit-le-savoir
+JWT_REFRESH_SECRET=encore-plus-secret-pour-rafraichir-le-token
 ACCESS_TOKEN_EXPIRY=1h
 REFRESH_TOKEN_EXPIRY=7d
 ```
 
-## 🎓 Pour les étudiants
+---
 
-Ce backend est conçu pour le cours React Native. Il simule:
-- Authentification JWT complète
-- CRUD restaurants/commandes
-- Upload de fichiers
-- Progression automatique des commandes
-- Géolocalisation (calcul de distance)
+## 🎓 Un petit mot pour les étudiants
 
-**Note:** En production, utilisez bcrypt pour hasher les mots de passe et une vraie base de données!
+Bravo d'être arrivé(e) jusqu'ici ! 👏 
+Gardez bien en tête que ce backend est une **simulation** expressément conçue pour vous faciliter la vie côté frontend (React Native). 
+
+Il simule plein de choses super sympas pour votre TP :
+- 🔐 Un vrai flux JWT (tokens qui expirent, rafraîchissement)
+- 📝 De la création et de l'édition de données (CRUD)
+- 🖼️ Le téléchargement d'images
+- 🚚 Une simulation de progression de commande (en cours, prête, livrée...)
+- 📍 Des calculs de distance pour la géolocalisation
+
+**⚠️ Attention ⚠️**
+*Ne mettez jamais ce code en production tel quel sur un vrai projet d'entreprise ! Dans la vraie vie, il faut hacher les mots de passe (avec `bcrypt` par exemple), utiliser une vraie base de données sécurisée, et valider les données beaucoup plus strictement.*
+
+Amusez-vous bien avec FoodieSpot, bon courage pour vos developpements et **bon code !** 💻✨
 
 ---
-*ESTIAM E4 - React Native / FoodieSpot*
+*Réalisé pour ESTIAM E4 - Module React Native / Projet FoodieSpot*

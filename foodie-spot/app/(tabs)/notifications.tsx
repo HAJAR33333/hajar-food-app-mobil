@@ -49,9 +49,9 @@ export default function NotificationScreen() {
     const token = await initialize();
 
     if (token) {
-      addTestResult(`✅ Token obtenu: ${token.token.substring(0, 20)}...`);
-      addTestResult(`📱 Plateforme: ${token.platform}`);
-      addTestResult(`🆔 Device: ${token.deviceId || 'N/A'}`);
+      addTestResult(` Token obtenu: ${token.token.substring(0, 20)}...`);
+      addTestResult(` Plateforme: ${token.platform}`);
+      addTestResult(` Device: ${token.deviceId || 'N/A'}`);
     } else {
       addTestResult(`❌ Echec de l\'intialisation`);
     }

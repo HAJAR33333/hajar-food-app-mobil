@@ -33,9 +33,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const state = await auth.getAuthState();
       setUser(state.user);
       setIsAuthenticated(state.isAuthenticated);
-      log.debug('✅ [AuthContext] Auth state:', state.isAuthenticated ? 'authenticated' : 'not authenticated');
+      log.debug('[AuthContext] Auth state:', state.isAuthenticated ? 'authenticated' : 'not authenticated');
     } catch (err) {
-      log.error('❌ [AuthContext] Auth check failed:', err);
+      log.error(' [AuthContext] Auth check failed:', err);
       setError(err instanceof Error ? err.message : 'Erreur de vérification');
       setIsAuthenticated(false);
       setUser(null);
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const state = await auth.getAuthState();
       setUser(state.user);
       setIsAuthenticated(state.isAuthenticated);
-      log.info('✅ [AuthContext] Login completed');
+      log.info(' [AuthContext] Login completed');
       return result;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Échec de connexion';
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const state = await auth.getAuthState();
       setUser(state.user);
       setIsAuthenticated(state.isAuthenticated);
-      log.info('✅ [AuthContext] Registration completed');
+      log.info('[AuthContext] Registration completed');
       return result;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Échec de l\'inscription';
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await auth.logout();
       setUser(null);
       setIsAuthenticated(false);
-      log.info('✅ [AuthContext] Logout completed');
+      log.info(' [AuthContext] Logout completed');
      router.replace('/login');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Échec de déconnexion';

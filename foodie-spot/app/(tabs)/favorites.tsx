@@ -32,19 +32,14 @@ export default function FavoritesScreen() {
   );
 
   const handleToggleFavorite = async (restaurantId: string) => {
-    // Keep a snapshot for revert
     const previousFavorites = [...favorites];
     
-    // Optimistic Update: Remove immediately
     setFavorites(prev => prev.filter(r => r.id !== restaurantId));
     
     try {
       await restaurantAPI.toggleFavorite(restaurantId);
-      // We don't necessarily need to reload everything if optimistic update holds, 
-      // but to ensure sync with backend, we can optionally fetch quietly in background
-      // await loadFavorites(); 
+    
     } catch (error) {
-      // Revert on error
       setFavorites(previousFavorites);
       console.error('Failed to toggle favorite', error);
     }
