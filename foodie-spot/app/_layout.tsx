@@ -1,6 +1,6 @@
 // app/_layout.tsx
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, useRouter, useSegments } from 'expo-router';
@@ -29,31 +29,36 @@ function RootLayoutContent() {
   const segments = useSegments();
   const router = useRouter();
 
+  // Keep track of refresh attempt to prevent loops
+  const hasAttemptedRefresh = React.useRef(false);
+
   // Navigation Guard
   useEffect(() => {
     if (isLoading) return;
 
-    const firstSegment = segments[0];
-    const protectedRoutes = ['(tabs)', 'cart', 'checkout', 'restaurant', 'dish', 'tracking', 'review'];
-    const isProtectedRoute = protectedRoutes.some(route => firstSegment === route || firstSegment?.startsWith(route));
-    const isAuthRoute = firstSegment === '(auth)' || firstSegment === 'login' || firstSegment === 'register';
-
-    console.log('🛡️ [NavigationGuard]', { segment: firstSegment, isAuthenticated, isProtectedRoute, isAuthRoute });
-
-    if (!isAuthenticated && isProtectedRoute) {
+    const inAuthGroup = segments[0] === '(auth)' || segments[0] === 'login' || segments[0] === 'register';
+    
+    // Si l'utilisateur n'est pas connecté et n'est pas déjà sur l'écran de connexion
+    if (!isAuthenticated && !inAuthGroup) {
       console.log('🔒 Redirecting to login...');
-      router.replace('/login');
-    } else if (isAuthenticated && isAuthRoute) {
+      
+      // Auto-refresh attempt once per unauthenticated cold state
+      if (!hasAttemptedRefresh.current) {
+        hasAttemptedRefresh.current = true;
+        refreshAuth().catch(() => {
+            router.replace('/login');
+        });
+      } else {
+        router.replace('/login');
+      }
+    } 
+    // Si l'utilisateur est déjà connecté et essaye d'aller sur l'écran de connexion
+    else if (isAuthenticated && inAuthGroup) {
       console.log('✅ Redirecting to home...');
+      hasAttemptedRefresh.current = false; // reset for next logout
       router.replace('/(tabs)');
     }
-  }, [segments, isLoading, isAuthenticated, router]);
-
-  useEffect(() => {
-    if (segments[0] === '(tabs)' && !isLoading && !isAuthenticated) {
-      refreshAuth();
-    }
-  }, [segments, isLoading, isAuthenticated, refreshAuth]);
+  }, [segments, isLoading, isAuthenticated]);
 
   if (isLoading) {
     return (
@@ -90,8 +95,6 @@ function RootLayoutContent() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="restaurant/[id]" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="dish/[id]" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="cart" options={{ animation: 'slide_from_bottom' }} />
-        <Stack.Screen name="checkout" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="tracking/[orderId]" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="review/[orderId]" options={{ presentation: 'modal' }} />
       </Stack>

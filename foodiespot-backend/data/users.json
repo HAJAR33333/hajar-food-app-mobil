@@ -194,7 +194,21 @@
     "lastName": "Rachach",
     "phone": "66666",
     "avatar": "",
-    "addresses": [],
+    "addresses": [
+      {
+        "id": "4d1f67a4-286c-4457-a523-4446e92c010a",
+        "label": "Uu",
+        "street": "Uu",
+        "city": "Yy",
+        "postalCode": "Ju",
+        "country": "France",
+        "latitude": 48.9918602,
+        "longitude": 2.1679607,
+        "isDefault": true,
+        "instructions": "",
+        "createdAt": "2026-03-15T19:26:10.449Z"
+      }
+    ],
     "notificationsEnabled": true,
     "preferences": {
       "theme": "system",
