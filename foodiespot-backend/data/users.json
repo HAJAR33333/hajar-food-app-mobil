@@ -185,5 +185,21 @@
     },
     "createdAt": "2026-03-15T00:25:49.660Z",
     "password": "Uuuuuui"
+  },
+  {
+    "id": "a20f6563-c096-4864-adcb-3321bb11b620",
+    "email": "hhh@gmail.com",
+    "password": "123456",
+    "firstName": "Hajar",
+    "lastName": "Rachach",
+    "phone": "66666",
+    "avatar": "",
+    "addresses": [],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-15T19:17:06.575Z"
   }
 ]
