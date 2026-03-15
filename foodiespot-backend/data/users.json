@@ -70,5 +70,120 @@
     },
     "createdAt": "2026-03-14T11:56:47.385Z",
     "password": "123456"
+  },
+  {
+    "id": "04212249-1662-45e5-bef5-b95bf3015ce8",
+    "email": "hhd@hjd.com",
+    "firstName": "hhd",
+    "lastName": "Demo",
+    "phone": "",
+    "avatar": "",
+    "addresses": [
+      {
+        "id": "d8bca609-1fc2-4866-89ec-611947ddc4eb",
+        "label": "Maison",
+        "street": "123 Rue de Paris",
+        "city": "Paris",
+        "postalCode": "75001",
+        "country": "France",
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "isDefault": true
+      }
+    ],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-14T23:49:11.057Z",
+    "password": "123456jj"
+  },
+  {
+    "id": "13215efa-dd74-4d00-8a91-feaf5ac6ba01",
+    "email": "abcd@gmail.com",
+    "firstName": "abcd",
+    "lastName": "Demo",
+    "phone": "",
+    "avatar": "",
+    "addresses": [
+      {
+        "id": "21952612-66c9-431e-abcd-1a0c2f79585b",
+        "label": "Maison",
+        "street": "123 Rue de Paris",
+        "city": "Paris",
+        "postalCode": "75001",
+        "country": "France",
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "isDefault": true
+      }
+    ],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-15T00:00:10.303Z",
+    "password": "Testyy",
+    "photo": "http://10.60.240.140:4000/uploads/1773532826469-66650b0a-ae4b-44fa-afce-2fa3169396b9.jpg"
+  },
+  {
+    "id": "55e4f668-202f-4366-b890-669237925573",
+    "email": "hhdyy@hjd.com",
+    "firstName": "hhdyy",
+    "lastName": "Demo",
+    "phone": "",
+    "avatar": "",
+    "addresses": [
+      {
+        "id": "1886f0ab-2703-4ff3-b223-fd27c8828093",
+        "label": "1 ",
+        "street": "Rue pontoise ",
+        "city": "Herblay sure seine",
+        "postalCode": "95220",
+        "country": "France",
+        "latitude": 48.9918692,
+        "longitude": 2.1679777,
+        "isDefault": true,
+        "instructions": "",
+        "createdAt": "2026-03-15T00:18:52.691Z"
+      }
+    ],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-15T00:08:28.696Z",
+    "password": "123456jj"
+  },
+  {
+    "id": "ea1fd67f-29a7-4abb-b296-a43fe522280b",
+    "email": "hhhh@yy.com",
+    "firstName": "hhhh",
+    "lastName": "Demo",
+    "phone": "",
+    "avatar": "",
+    "addresses": [
+      {
+        "id": "dc4a58d9-a655-4c4b-ab6e-e16ef90d13f0",
+        "label": "Maison",
+        "street": "123 Rue de Paris",
+        "city": "Paris",
+        "postalCode": "75001",
+        "country": "France",
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "isDefault": true
+      }
+    ],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-15T00:25:49.660Z",
+    "password": "Uuuuuui"
   }
 ]

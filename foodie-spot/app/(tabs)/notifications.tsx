@@ -42,7 +42,7 @@ export default function NotificationScreen() {
 
   useEffect(() => {
     refreshScheduled();
-  });
+  }, [refreshScheduled]);
 
   const handleInitialize = async () => {
     addTestResult('🔄 Initialisation des notifications ...');

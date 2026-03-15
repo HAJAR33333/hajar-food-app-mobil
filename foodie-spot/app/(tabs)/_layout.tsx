@@ -32,13 +32,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="magnifyingglass" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="orders"
-        options={{
-          title: t('common.orders'),
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="bag" color={color} />,
-        }}
-      />
+
       <Tabs.Screen
         name="profile"
         options={{
@@ -50,11 +44,11 @@ export default function TabLayout() {
         name="notifications"
         options={{
           title: t('common.notifications'),
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="alarm.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="bell.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="Cart"
+        name="cart"
         options={{
           title: t('common.cart'),
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="bag" color={color} />,

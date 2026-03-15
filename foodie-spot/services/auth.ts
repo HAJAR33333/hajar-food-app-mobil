@@ -229,37 +229,6 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<{ user: User; tokens: AuthTokens }> {
   try {
-    const DEV_BYPASS_LOGIN = __DEV__;
-
-    if (DEV_BYPASS_LOGIN) {
-      const user: User = {
-        id: 'dev-user-1',
-        email: credentials.email || 'test@example.com',
-        firstName: 'Demo',
-        lastName: 'User',
-        name: 'Demo User',
-        phone: '',
-        avatar: '',
-        addresses: [],
-        favoriteRestaurants: [],
-        notificationsEnabled: true,
-        createdAt: new Date().toISOString(),
-      };
-
-      const tokens: AuthTokens = {
-        accessToken: 'dev-access-token',
-        refreshToken: 'dev-refresh-token',
-        expiresIn: 3600,
-      };
-
-      await this.setAccessToken(tokens.accessToken);
-      await this.setRefreshToken(tokens.refreshToken);
-      await this.setStoredUser(user);
-
-      log.info('✅ [Auth] DEV mock login successful for:', user.email);
-      return { user, tokens };
-    }
-
     log.info('🔐 [Auth] Attempting login for:', credentials.email);
 
     const response = await api.post('/auth/login', credentials);

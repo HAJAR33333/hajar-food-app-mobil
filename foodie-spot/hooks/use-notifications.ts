@@ -1,17 +1,17 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import * as Notifications from 'expo-notifications';
+import type { Notification, NotificationResponse, NotificationRequest } from 'expo-notifications';
 import { notifications, NotificationPreferences, PushToken } from "@/services/notification";
 
 export const useNotifications = (
-    onReceived?: (notification: Notifications.Notification) => void,
+    onReceived?: (notification: Notification) => void,
     onTapped?: (datam: any) => void
 ) => {
     const [pushToken, setPushToken] = useState<PushToken | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [hasPermission, setHasPermission] = useState(false);
     const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
-    const [scheduled, setScheduled] = useState<Notifications.NotificationRequest[]>([]);
+    const [scheduled, setScheduled] = useState<NotificationRequest[]>([]);
     const [badgeCount, setBadgeCount] = useState(0);
 
     const cleanupRef = useRef<(() => void) | null>(null);
@@ -28,7 +28,7 @@ export const useNotifications = (
             const [token, prefs, badge, scheduledList] = await Promise.all([
                 notifications.getToken(),
                 notifications.getPreferences(),
-                // notifications.getBadge(),
+                notifications.getBadge(),
                 notifications.getScheduled(),
             ]);
 
@@ -137,11 +137,19 @@ export const useNotifications = (
 }
 
 export const useLastNotificationResponse = () => {
-    const [response, setResponse] = useState<Notifications.NotificationResponse | null>(null);
+    const [response, setResponse] = useState<NotificationResponse | null>(null);
     useEffect(() => {
-        Notifications.getLastNotificationResponseAsync().then((r) => {
-            if (r) setResponse(r);
-        });
+        let active = true;
+        const load = async () => {
+            const { getLastNotificationResponseAsync } = await import('expo-notifications');
+            const r = await getLastNotificationResponseAsync();
+            if (active && r) setResponse(r);
+        };
+        void load();
+
+        return () => {
+            active = false;
+        };
     }, []);
 
     return response;

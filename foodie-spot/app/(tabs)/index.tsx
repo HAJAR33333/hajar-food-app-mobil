@@ -7,7 +7,7 @@ import { Promo, restaurantAPI } from '@/services/api';
 import { locationService } from '@/services/location';
 import { Restaurant } from '@/types';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -55,6 +55,26 @@ export default function HomeScreen() {
       setLoading(false);
     }
   };
+
+  const handleToggleFavorite = useCallback(async (restaurantId: string, currentlyFavorite: boolean) => {
+    // Optimistic Update
+    setRestaurants((prev) => 
+      prev.map((r) => r.id === restaurantId ? { ...r, isFavorite: !currentlyFavorite } : r)
+    );
+    try {
+      const newFavorite = await restaurantAPI.toggleFavorite(restaurantId);
+      // Synchronize in case backend disagrees
+      setRestaurants((prev) => 
+        prev.map((r) => r.id === restaurantId ? { ...r, isFavorite: newFavorite } : r)
+      );
+    } catch (error) {
+      // Revert on error
+      setRestaurants((prev) => 
+        prev.map((r) => r.id === restaurantId ? { ...r, isFavorite: currentlyFavorite } : r)
+      );
+      Alert.alert(t('home.error'), t('home.error_loading'));
+    }
+  }, [t]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -105,7 +125,12 @@ export default function HomeScreen() {
           ) : (
             <>
               {restaurants.map((restaurant) => (
-                <RestaurantCard key={restaurant.id} restaurant={restaurant} onPress={() => router.push(`/restaurant/${restaurant.id}`)} />
+                <RestaurantCard
+                  key={restaurant.id}
+                  restaurant={restaurant}
+                  onPress={() => router.push(`/restaurant/${restaurant.id}`)}
+                  onToggleFavorite={handleToggleFavorite}
+                />
               ))}
               {restaurants.length === 0 && <Text style={styles.emptyText}>{t('home.no_restaurant_found')}</Text>}
             </>

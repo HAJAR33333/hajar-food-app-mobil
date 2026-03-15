@@ -75,14 +75,14 @@ function ToastItem({ toast, index }: ToastItemProps) {
     }, [slideAnim]);
 
 
-const typeStyles = {
-    success: { bg: '#4CAF50', icon: 'checkmark-circle' as const },
-    error: { bg: '#F44336', icon: 'close-circle' as const},
-    info: { bg: '#2196F3', icon: 'information-circle' as const },
-    warning: { bg: '#FF9800', icon: 'warning' as const },
+const typeStyles: Record<ToastType, { bg: string; icon: "checkmark-circle" | "close-circle" | "information-circle" | "warning" }> = {
+    success: { bg: '#4CAF50', icon: 'checkmark-circle' },
+    error: { bg: '#F44336', icon: 'close-circle' },
+    info: { bg: '#2196F3', icon: 'information-circle' },
+    warning: { bg: '#FF9800', icon: 'warning' },
 }
 
-const style = typeStyles[toast.type];
+const style = typeStyles[toast.type] || typeStyles.info;
 
     return (
         <Animated.View style={[styles.toast, {transform: [{ translateY: slideAnim }], top: 60 + index * 90}]}>

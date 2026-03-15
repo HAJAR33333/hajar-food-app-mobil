@@ -175,7 +175,7 @@ export default function LoginScreen() {
             <Text style={styles.registerText}>
               Pas encore de compte ?{' '}
               <Text style={styles.registerTextBold}>
-                S'inscrire
+                S&apos;inscrire
               </Text>
             </Text>
           </TouchableOpacity>
@@ -183,7 +183,7 @@ export default function LoginScreen() {
           {/* DEMO */}
           <View style={styles.demoHint}>
             <Text style={styles.demoHintText}>
-              💡 Pour tester, utilisez n'importe quel email/mot de passe
+              💡 Pour tester, utilisez n&apos;importe quel email/mot de passe
             </Text>
           </View>
         </ScrollView>

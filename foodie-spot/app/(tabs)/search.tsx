@@ -55,6 +55,15 @@ export default function SearchScreen() {
         }
     };
 
+    const handleToggleFavorite = async (restaurantId: string) => {
+        try {
+            const newFavorite = await restaurantAPI.toggleFavorite(restaurantId);
+            setRestaurants((prev) => prev.map((r) => r.id === restaurantId ? { ...r, isFavorite: newFavorite } : r));
+        } catch (error) {
+            console.error('Failed to toggle favorite', error);
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
             <View style={styles.header}>
@@ -69,6 +78,14 @@ export default function SearchScreen() {
                 </View>
                 <TouchableOpacity style={styles.filterButton} onPress={() => setShowFilters(!showFilters)}>
                     <Filter size={24} color={Colors.light.text} />
+                </TouchableOpacity>
+            </View>
+            <View style={styles.searchActions}>
+                <TouchableOpacity style={styles.searchActionBtn} onPress={() => router.push('/cart')}>
+                    <Text style={styles.searchActionText}>Commandes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.searchActionBtn} onPress={() => router.push('/notifications')}>
+                    <Text style={styles.searchActionText}>🔔</Text>
                 </TouchableOpacity>
             </View>
 
@@ -112,7 +129,11 @@ export default function SearchScreen() {
                     </Text>
                 )}
                 renderItem={({ item }) => (
-                    <RestaurantCard restaurant={item} onPress={() => router.push(`/restaurant/${item.id}`)} />
+                    <RestaurantCard
+                      restaurant={item}
+                      onPress={() => router.push(`/restaurant/${item.id}`)}
+                      onToggleFavorite={handleToggleFavorite}
+                    />
                 )}
                 ListEmptyComponent={() => (
                     !loading ? (
@@ -158,6 +179,24 @@ const styles = StyleSheet.create({
     },
     filterButton: {
         padding: 8,
+    },
+    searchActions: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 16,
+        marginBottom: 12,
+        gap: 8,
+    },
+    searchActionBtn: {
+        flex: 1,
+        backgroundColor: '#FFEDE2',
+        borderRadius: 10,
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    searchActionText: {
+        color: '#FF6B35',
+        fontWeight: '700',
     },
     filters: {
         paddingHorizontal: 16,

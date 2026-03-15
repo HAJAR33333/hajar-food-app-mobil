@@ -7,9 +7,9 @@ export interface Restaurant {
     image: string;
     rating: number;
     reviewsCount: number;
-    deliveryTime: number;
+    deliveryTime: number | { min: number; max: number };
     distance: number;
-    priceRange: string;
+    priceRange: string | number;
     address: string;
     phone: string;
     coordinates: {
@@ -106,7 +106,7 @@ export interface ToastOptions {
     duration?: number;
 }
 
-export type ToastType = 'success' | 'error' | 'info';
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export interface ToastContextType {
     show: (message: string, type?: ToastType, duration?: number) => void;

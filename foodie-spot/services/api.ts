@@ -218,7 +218,26 @@ export const restaurantAPI = {
             const cached = await cache.get<Dish[]>(`menu_${restaurantId}`);
             return cached || [];
         }
-    }
+    },
+
+     async getFavorites(): Promise<Restaurant[]> {
+        try {
+            const response = await api.get('/user/favorites');
+            return response.data?.data || [];
+        } catch (error) {
+            log.error('Failed to fetch favorites', error);
+            return [];
+        }
+    },
+    async toggleFavorite(restaurantId: string): Promise<boolean> {
+        try {
+            const response = await api.post(`/user/favorites/${restaurantId}`);
+            return response.data?.isFavorite ?? true;
+        } catch (error) {
+            log.error('Failed to toggle favorite', error);
+            throw error;
+        }
+    },
 }
 
 export const userAPI = {
@@ -238,10 +257,19 @@ export const userAPI = {
     },
 
     async getCurrentUser(): Promise<User | null> {
-        return await storage.getItem(STORAGE_KEYS.USER);
+        try {
+            const response = await api.get('/users/profile');
+            const user = response.data?.data || null;
+            if (user) {
+                await storage.setItem(STORAGE_KEYS.USER, user);
+            }
+            return user;
+        } catch (error) {
+            log.warn('Failed to fetch user profile from API, falling back to cache.', error);
+            return await storage.getItem(STORAGE_KEYS.USER);
+        }
     },
-    async toggleFavorite(restaurantId: string) {
-    },
+   
     async updateProfile(updates: Partial<User>): Promise<User> {
         try {
             const response = await api.patch('/user/profile', updates);
@@ -253,11 +281,63 @@ export const userAPI = {
             throw error;
         }
     },
+    async toggleFavorite(restaurantId: string): Promise<boolean> {
+        try {
+            return await restaurantAPI.toggleFavorite(restaurantId);
+        } catch (error) {
+            log.error('Failed to toggle favorite via userAPI', error);
+            throw error;
+        }
+    },
     async logout(): Promise<void> {
         await storage.removeItem(STORAGE_KEYS.USER);
         await storage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
         await cache.clearAll();
         log.info('User logged out, cache cleared');
+    },
+
+    async getAddresses(): Promise<any[]> {
+        try {
+            const response = await api.get('/users/addresses');
+            return response.data?.data || [];
+        } catch (error) {
+            log.error('Failed to load user addresses', error);
+            return [];
+        }
+    },
+
+    async addAddress(address: {
+        label: string;
+        street: string;
+        city: string;
+        postalCode: string;
+        country: string;
+        latitude: number;
+        longitude: number;
+        isDefault?: boolean;
+        instructions?: string;
+    }): Promise<any> {
+        const response = await api.post('/users/addresses', address);
+        return response.data?.data;
+    },
+
+    async updateAddress(addressId: string, updates: Partial<{
+        label: string;
+        street: string;
+        city: string;
+        postalCode: string;
+        country: string;
+        latitude: number;
+        longitude: number;
+        isDefault: boolean;
+        instructions: string;
+    }>): Promise<any> {
+        const response = await api.put(`/users/addresses/${addressId}`, updates);
+        return response.data?.data;
+    },
+
+    async removeAddress(addressId: string): Promise<void> {
+        await api.delete(`/users/addresses/${addressId}`);
     }
 
 }
@@ -303,6 +383,10 @@ export const orderAPI = {
             return (await cache.get<Order>(`order_${id}`)) || null;
         }
     },
+    async syncOfflineOrders(): Promise<void> {
+        // Implement offline sync logic if needed
+        log.info('syncOfflineOrders called');
+    }
 }
 
 export const uploadAPI = {

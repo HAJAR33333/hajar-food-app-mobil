@@ -1,6 +1,6 @@
 import { Restaurant } from '@/types';
 import { Image } from 'expo-image';
-import { Clock, MapPin, Star } from 'lucide-react-native';
+import { Clock, MapPin, Star, Heart } from 'lucide-react-native';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -8,34 +8,48 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 interface Props {
     restaurant: Restaurant;
     onPress?: () => void;
+    onToggleFavorite?: (restaurantId: string, isFavorite: boolean) => void;
     compact?: boolean;
 }
 
-export const RestaurantCard: React.FC<Props> = ({ restaurant, onPress, compact }) => {
+export const RestaurantCard: React.FC<Props> = ({ restaurant, onPress, onToggleFavorite, compact }) => {
+    const deliveryTimeText = typeof restaurant.deliveryTime === 'object'
+        ? `${restaurant.deliveryTime.min}-${restaurant.deliveryTime.max} min`
+        : `${restaurant.deliveryTime} min`;
+
+    const priceRangeText = typeof restaurant.priceRange === 'number'
+        ? '€'.repeat(Math.max(1, restaurant.priceRange))
+        : String(restaurant.priceRange);
+
     return (
         <TouchableOpacity style={[styles.card, compact && styles.compact]} onPress={onPress}>
             <Image source={{ uri: restaurant.image }} style={[styles.image, compact && styles.compactImage]} />
 
             <View style={styles.content}>
-                <View style={styles.header}>
-                    <Text style={styles.name} numberOfLines={1}>{restaurant.name}</Text>
-                    <View style={styles.badge}>
-                        <Text style={styles.badgeText}>{restaurant.priceRange}</Text>
+                <View style={styles.headerWithFavorite}>
+                    <View style={styles.headerLeft}>
+                        <Text style={styles.name} numberOfLines={1}>{restaurant.name}</Text>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText}>{priceRangeText}</Text>
+                        </View>
                     </View>
+                    {onToggleFavorite && (
+                        <TouchableOpacity onPress={(e) => { e.stopPropagation(); onToggleFavorite(restaurant.id, !!restaurant.isFavorite); }}>
+                            <Heart size={20} color={restaurant.isFavorite ? '#FF6B35' : '#999'} fill={restaurant.isFavorite ? '#FF6B35' : 'transparent'} />
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 <Text style={styles.cuisine}>{restaurant.cuisine}</Text>
                 <View style={styles.meta}>
                     <View style={styles.metaItem}>
                         <Star size={16} color="#FF6B35" />
-                        <Text style={styles.metaText}>{restaurant.rating} {restaurant.reviewCount} avis</Text>
+                        <Text style={styles.metaText}>{restaurant.rating} ({restaurant.reviewsCount}) avis</Text>
                     </View>
                     <View style={styles.metaItem}>
                         <Clock size={16} color="#FF6B35" />
                         <Text style={styles.metaText}>
-                            {typeof restaurant.deliveryTime === 'object' 
-                                ? `${restaurant.deliveryTime.min}-${restaurant.deliveryTime.max}` 
-                                : restaurant.deliveryTime} min
+                            {deliveryTimeText}
                         </Text>
                     </View>
 
@@ -84,11 +98,18 @@ const styles = StyleSheet.create({
         padding: 12,
         gap: 6
     },
-    header: {
+    headerWithFavorite: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 8
+    },
+    headerLeft: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 8,
     },
     name: {
         flex: 1,

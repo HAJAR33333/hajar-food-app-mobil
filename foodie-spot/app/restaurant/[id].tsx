@@ -48,10 +48,15 @@ export default function RestaurantScreen() {
   };
 
   const handleToggleFavorite = async () => {
+    const previousState = isFavorite;
+    // Optimistic Update
+    setIsFavorite(!isFavorite);
     try {
-      await userAPI.toggleFavorite(id);
-      setIsFavorite(!isFavorite);
+      const newFavorite = await userAPI.toggleFavorite(id);
+      setIsFavorite(newFavorite);
     } catch (error) {
+      // Revert on error
+      setIsFavorite(previousState);
       Alert.alert(t('home.error'), t('restaurant.error_favorite'));
     }
   };
@@ -158,7 +163,9 @@ export default function RestaurantScreen() {
               <Clock size={16} color="#666" />
               <Text style={styles.metaText}>
                 {restaurant.deliveryTime
-                  ? `${restaurant.deliveryTime.min}-${restaurant.deliveryTime.max} min`
+                  ? typeof restaurant.deliveryTime === 'object'
+                    ? `${restaurant.deliveryTime.min}-${restaurant.deliveryTime.max} min`
+                    : `${restaurant.deliveryTime} min`
                   : t('restaurant.unknown')}
               </Text>
             </View>
@@ -191,8 +198,8 @@ export default function RestaurantScreen() {
     router.push({
       pathname: "/dish/[id]",
       params: {
-        id: dish.id,
-        restaurantId: restaurant.id,
+        id: String(dish.id),
+        restaurantId: String(restaurant.id),
       },
     })
   }

@@ -1,3 +1,6 @@
+import { Alert } from 'react-native';
+import { ToastOptions, ToastType } from '@/types';
+
 const toast = {
     success: (message: string, options?: ToastOptions) => {
         Alert.alert("✅ Succès", message);

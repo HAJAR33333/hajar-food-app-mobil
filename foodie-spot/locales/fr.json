@@ -64,6 +64,7 @@
         "search": "Recherche",
         "orders": "Commandes",
         "profile": "Profil",
-        "notifications": "Notifications"
+        "notifications": "Notifications",
+        "cart": "commande"
     }
 }
