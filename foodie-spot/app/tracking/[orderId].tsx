@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView, StyleSheet, Text, View, RefreshControl } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE, type Region } from "react-native-maps";
 import { orderAPI } from "@/services/api";
 
 export default function TrackingScreen() {
@@ -10,8 +10,12 @@ export default function TrackingScreen() {
   const [tracking, setTracking] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [initialRegion, setInitialRegion] = useState<Region | null>(null);
+  const [driverCoordinate, setDriverCoordinate] = useState<{ latitude: number; longitude: number } | null>(null);
+  const mapRef = useRef<MapView | null>(null);
+  const driverMarkerRef = useRef<any>(null);
 
-  const loadTracking = useCallback(async () => {
+  const trackOrder = useCallback(async () => {
     if (!orderId) {
       setErrorMessage('Aucun numéro de commande fourni.');
       return;
@@ -20,23 +24,67 @@ export default function TrackingScreen() {
       const data = await orderAPI.getOrderTracking(orderId);
       setTracking(data);
       setErrorMessage(null);
+
+      const restaurantLocation = data?.restaurant?.location;
+      const userLocation = data?.deliveryAddress;
+      const driverLocation = data?.driverLocation;
+
+      if (restaurantLocation && !initialRegion) {
+        setInitialRegion({
+          latitude: restaurantLocation.latitude,
+          longitude: restaurantLocation.longitude,
+          latitudeDelta: 0.07,
+          longitudeDelta: 0.07,
+        });
+      }
+
+      if (driverLocation) {
+        const next = {
+          latitude: driverLocation.latitude,
+          longitude: driverLocation.longitude,
+        };
+        if (driverMarkerRef.current && typeof driverMarkerRef.current.animateMarkerToCoordinate === 'function') {
+          driverMarkerRef.current.animateMarkerToCoordinate(next, 1000);
+        }
+        setDriverCoordinate(next);
+      }
+
+      if (restaurantLocation && userLocation && mapRef.current) {
+        mapRef.current.fitToCoordinates(
+          [
+            {
+              latitude: restaurantLocation.latitude,
+              longitude: restaurantLocation.longitude,
+            },
+            {
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+            },
+            ...(driverLocation ? [{ latitude: driverLocation.latitude, longitude: driverLocation.longitude }] : []),
+          ],
+          {
+            edgePadding: { top: 80, right: 50, bottom: 160, left: 50 },
+            animated: true,
+          }
+        );
+      }
     } catch (error) {
       console.error('Failed to load tracking', error);
       setErrorMessage('Impossible de charger le suivi. Veuillez réessayer.');
     }
-  }, [orderId]);
+  }, [orderId, initialRegion]);
 
   useEffect(() => {
-    loadTracking();
+    trackOrder();
     const timer = setInterval(() => {
-      loadTracking();
-    }, 20000);
+      trackOrder();
+    }, 12000);
     return () => clearInterval(timer);
-  }, [loadTracking]);
+  }, [trackOrder]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadTracking();
+    await trackOrder();
     setRefreshing(false);
   };
 
@@ -107,14 +155,17 @@ export default function TrackingScreen() {
         {order?.restaurant?.location ? (
           <View style={styles.mapCard}>
             <MapView
+              ref={mapRef}
               provider={PROVIDER_GOOGLE}
               style={styles.map}
-              initialRegion={{
+              initialRegion={initialRegion ?? {
                 latitude: order.restaurant.location.latitude,
                 longitude: order.restaurant.location.longitude,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
+                latitudeDelta: 0.08,
+                longitudeDelta: 0.08,
               }}
+              showsUserLocation={false}
+              zoomControlEnabled
             >
               <Marker
                 coordinate={{
@@ -124,14 +175,34 @@ export default function TrackingScreen() {
                 title={order.restaurant.name}
                 description="Restaurant"
               />
-              {order.driverLocation ? (
+
+              {order?.deliveryAddress?.latitude && order?.deliveryAddress?.longitude ? (
+                <Marker
+                  coordinate={{
+                    latitude: order.deliveryAddress.latitude,
+                    longitude: order.deliveryAddress.longitude,
+                  }}
+                  title="Adresse de livraison"
+                  pinColor="green"
+                />
+              ) : null}
+
+              {driverCoordinate ? (
+                <Marker.Animated
+                  ref={driverMarkerRef}
+                  coordinate={driverCoordinate}
+                  title="Livreur"
+                  description="En route"
+                  pinColor="blue"
+                />
+              ) : order.driverLocation ? (
                 <Marker
                   coordinate={{
                     latitude: order.driverLocation.latitude,
                     longitude: order.driverLocation.longitude,
                   }}
-                  pinColor="blue"
                   title="Livreur"
+                  pinColor="blue"
                 />
               ) : null}
             </MapView>

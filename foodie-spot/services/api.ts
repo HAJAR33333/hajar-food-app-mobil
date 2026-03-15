@@ -232,9 +232,10 @@ export const restaurantAPI = {
     async toggleFavorite(restaurantId: string): Promise<boolean> {
         try {
             const response = await api.post(`/user/favorites/${restaurantId}`);
-            return response.data?.isFavorite ?? true;
-        } catch (error) {
-            log.error('Failed to toggle favorite', error);
+            // support both response.data.isFavorite and response.data.data.isFavorite
+            return response.data?.isFavorite ?? response.data?.data?.isFavorite ?? true;
+        } catch (error: any) {
+            log.error('Failed to toggle favorite', error?.response?.data || error?.message || error);
             throw error;
         }
     },

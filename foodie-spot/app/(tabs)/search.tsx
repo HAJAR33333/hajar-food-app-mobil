@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import { useRouter } from "expo-router";
+import Voice from '@react-native-voice/voice';
 import { RestaurantCard } from "@/components/restaurant-card";
 import { Colors } from "@/constants/theme";
 import { restaurantAPI } from "@/services/api";
 import { Restaurant, SearchFilters } from "@/types";
-import { Filter, Search } from "lucide-react-native";
+import { Filter, Search, Mic, MicOff } from "lucide-react-native";
 import { useTranslation } from 'react-i18next';
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,6 +21,7 @@ export default function SearchScreen() {
     const [filters, setFilters] = useState<SearchFilters>({});
     const [showFilters, setShowFilters] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isListening, setIsListening] = useState(false);
 
     useEffect(() => {
         const loadCategories = async () => {
@@ -40,6 +42,31 @@ export default function SearchScreen() {
         loadRestaurants();
     }, [debouncedQuery, filters]);
 
+    useEffect(() => {
+        Voice.onSpeechResults = (event: any) => {
+            const values = event.value || [];
+            if (values.length > 0) {
+                setQuery(values[0]);
+                setIsListening(false);
+            }
+        };
+        Voice.onSpeechError = (error: any) => {
+            console.error('Voice error', error);
+            setIsListening(false);
+            Alert.alert(t('home.error'), t('search.voice_error'));
+        };
+
+        return () => {
+            try {
+                if (Voice && typeof Voice.removeAllListeners === 'function') {
+                    Voice.removeAllListeners();
+                }
+            } catch (error) {
+                console.warn('Failed to remove voice listeners', error);
+            }
+        };
+    }, []);
+
     const loadRestaurants = async () => {
         setLoading(true);
         try {
@@ -52,6 +79,58 @@ export default function SearchScreen() {
             }
         } finally {
             setLoading(false);
+        }
+    };
+
+    const startVoiceSearch = async () => {
+        try {
+            // Enhanced safety check for unsupported environments (like Expo Go without custom dev client)
+            if (!Voice || !Voice.start) {
+                Alert.alert(t('home.error'), t('search.voice_unsupported'));
+                return;
+            }
+            
+            // Check speech recognition services directly if available on the platform
+            if (typeof Voice.getSpeechRecognitionServices === 'function') {
+                try {
+                    const services = await Voice.getSpeechRecognitionServices();
+                    if (!services || services.length === 0) {
+                        Alert.alert(t('home.error'), t('search.voice_unsupported'));
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Failed to check speech services', e);
+                    // Continue anyway, maybe it just failed the check
+                }
+            }
+
+            // Attempt to start
+            setIsListening(true);
+            try {
+                await Voice.start('fr-FR');
+            } catch (startError: any) {
+                // If the underlying native module throws (e.g., startSpeech of null)
+                console.warn('Voice.start threw exception:', startError);
+                setIsListening(false);
+                Alert.alert(t('home.error'), t('search.voice_unsupported'));
+            }
+        } catch (error) {
+            console.error('Voice start failed', error);
+            setIsListening(false);
+            Alert.alert(t('home.error'), t('search.voice_error_start'));
+        }
+    };
+
+    const stopVoiceSearch = async () => {
+        try {
+            if (Voice && typeof Voice.stop === 'function') {
+                await Voice.stop();
+            }
+            setIsListening(false);
+        } catch (error) {
+            console.error('Voice stop failed', error);
+            // Even if stopping fails, we revert UI state
+            setIsListening(false);
         }
     };
 
@@ -75,6 +154,13 @@ export default function SearchScreen() {
                         value={query}
                         onChangeText={setQuery}
                     />
+                    <TouchableOpacity
+                        style={styles.voiceButton}
+                        onPress={isListening ? stopVoiceSearch : startVoiceSearch}
+                        accessibilityLabel={isListening ? t('search.stop_voice') : t('search.start_voice')}
+                    >
+                        {isListening ? <MicOff size={18} color="#FF6B35" /> : <Mic size={18} color="#FF6B35" />}
+                    </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={styles.filterButton} onPress={() => setShowFilters(!showFilters)}>
                     <Filter size={24} color={Colors.light.text} />
@@ -176,6 +262,15 @@ const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
         fontSize: 16,
+    },
+    voiceButton: {
+        width: 38,
+        height: 38,
+        marginLeft: 8,
+        borderRadius: 999,
+        backgroundColor: '#FFF1E5',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     filterButton: {
         padding: 8,

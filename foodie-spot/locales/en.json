@@ -14,7 +14,12 @@
     "search": {
         "title": "Search",
         "search_placeholder": "Search for a restaurant...",
-        "results_found": "restaurants found"
+        "results_found": "restaurants found",
+        "voice_error": "Voice recognition failed.",
+        "voice_error_start": "Unable to start voice recognition.",
+        "voice_unsupported": "Voice recognition is unavailable on this device.",
+        "start_voice": "Start voice search",
+        "stop_voice": "Stop voice search"
     },
     "orders": {
         "title": "My Orders",
@@ -50,7 +55,14 @@
         "directions": "Directions",
         "call": "Call",
         "menu": "Menu",
-        "error_favorite": "Failed to update favorite status"
+        "error_favorite": "Failed to update favorite status",
+        "delivery_estimate": "Delivery estimation",
+        "choose_delivery_address": "Choose a delivery address",
+        "current_location": "Current location",
+        "current_location_subtitle": "Use your GPS location",
+        "estimated_time": "Estimated time",
+        "delivery_cost": "Delivery cost",
+        "unknown": "Unknown"
     },
     "common": {
         "home": "Home",

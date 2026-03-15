@@ -1,8 +1,10 @@
 import { MapPin, Search } from 'lucide-react-native';
 import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { CategoryList } from '@/components/category-list';
 import { RestaurantCard } from '@/components/restaurant-card';
+import { Colors } from '@/constants/theme';
 import { Promo, restaurantAPI } from '@/services/api';
 import { locationService } from '@/services/location';
 import { Restaurant } from '@/types';
@@ -22,6 +24,8 @@ export default function HomeScreen() {
     const newLang = currentLang.startsWith('fr') ? 'en' : 'fr';
     i18n.changeLanguage(newLang);
   };
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
   const [location, setLocation] = useState<string>(t('home.locating'));
   const [promo, setPromo] = useState<Promo | null>(null);
 
@@ -63,16 +67,15 @@ export default function HomeScreen() {
     );
     try {
       const newFavorite = await restaurantAPI.toggleFavorite(restaurantId);
-      // Synchronize in case backend disagrees
       setRestaurants((prev) => 
         prev.map((r) => r.id === restaurantId ? { ...r, isFavorite: newFavorite } : r)
       );
-    } catch (error) {
-      // Revert on error
+    } catch (error: any) {
       setRestaurants((prev) => 
         prev.map((r) => r.id === restaurantId ? { ...r, isFavorite: currentlyFavorite } : r)
       );
-      Alert.alert(t('home.error'), t('home.error_loading'));
+      const errMessage = error?.response?.data?.message || error?.message || t('home.error_loading');
+      Alert.alert(t('home.error'), String(errMessage));
     }
   }, [t]);
 
@@ -83,13 +86,13 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.header, { backgroundColor: colorScheme === 'dark' ? '#121212' : colors.tint }]}> 
         <View style={styles.locationContainer}>
-          <MapPin size={20} color="#fff" />
+          <MapPin size={20} color={colorScheme === 'dark' ? '#fff' : '#fff'} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.locationLabel}>{t('home.deliver_to')} </Text>
-            <Text style={styles.locationText} numberOfLines={1}>{location}</Text>
+            <Text style={[styles.locationLabel, { color: colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.9)' }]}>{t('home.deliver_to')} </Text>
+            <Text style={[styles.locationText, { color: '#fff' }]} numberOfLines={1}>{location}</Text>
           </View>
           <TouchableOpacity
             style={styles.langButton}
@@ -99,29 +102,29 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.searchBar} onPress={() => router.push('/(tabs)/search')}>
-          <Search size={20} color="#666" />
-          <Text style={styles.searchPlaceholder}>{t('home.search_placeholder')}</Text>
+        <TouchableOpacity style={[styles.searchBar, { backgroundColor: colorScheme === 'dark' ? '#1f1f1f' : '#fff', borderColor: colorScheme === 'dark' ? '#333' : '#ECECEC' }]} onPress={() => router.push('/(tabs)/search')}>
+          <Search size={20} color={colorScheme === 'dark' ? '#fff' : '#666'} />
+          <Text style={[styles.searchPlaceholder, { color: colorScheme === 'dark' ? '#ddd' : '#666' }]}>{t('home.search_placeholder')}</Text>
         </TouchableOpacity>
       </View>
 
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {promo && (
-          <View style={styles.promoBanner}>
-            <Text style={styles.promoLabel}>{t('home.special_offer')}</Text>
-            <Text style={styles.promoTitle}>{promo.title}</Text>
-            <Text style={styles.promoCode}>Code: {promo.code}</Text>
+          <View style={[styles.promoBanner, { backgroundColor: colorScheme === 'dark' ? '#6d28d9' : '#8b5cf6' }] }>
+            <Text style={[styles.promoLabel, { color: '#fff' }]}>{t('home.special_offer')}</Text>
+            <Text style={[styles.promoTitle, { color: '#fff' }]}>{promo.title}</Text>
+            <Text style={[styles.promoCode, { color: 'rgba(255,255,255,0.9)' }]}>Code: {promo.code}</Text>
           </View>
         )}
 
         <CategoryList />
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}> {t('home.nearby')}</Text>
+        <View style={[styles.section, { backgroundColor: colors.background }] }>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('home.nearby')}</Text>
 
           {loading ? (
-            <ActivityIndicator size="large" color="#FF6B35" style={{ margin: 20 }} />
+            <ActivityIndicator size="large" color={colors.tint} style={{ margin: 20 }} />
           ) : (
             <>
               {restaurants.map((restaurant) => (
@@ -132,7 +135,7 @@ export default function HomeScreen() {
                   onToggleFavorite={handleToggleFavorite}
                 />
               ))}
-              {restaurants.length === 0 && <Text style={styles.emptyText}>{t('home.no_restaurant_found')}</Text>}
+              {restaurants.length === 0 && <Text style={[styles.emptyText, { color: colors.icon }]}>{t('home.no_restaurant_found')}</Text>}
             </>
           )}
         </View>
@@ -147,10 +150,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   header: {
-    backgroundColor: '#FF6B35',
     padding: 16,
     paddingBottom: 20,
   },
@@ -162,12 +163,10 @@ const styles = StyleSheet.create({
   },
   locationLabel: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.8)',
   },
   locationText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
   },
   langButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -185,7 +184,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: '#fff',
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -193,7 +191,6 @@ const styles = StyleSheet.create({
   searchPlaceholder: {
     flex: 1,
     fontSize: 14,
-    color: 'rgba(0, 0, 0, 0.5)',
   },
   content: {
     flex: 1,
@@ -201,13 +198,11 @@ const styles = StyleSheet.create({
   promoBanner: {
     margin: 16,
     padding: 16,
-    backgroundColor: '#8B5CF6',
     borderRadius: 16,
   },
   promoLabel: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#fff',
     letterSpacing: 1,
     marginBottom: 4,
     textTransform: 'uppercase',
@@ -216,12 +211,10 @@ const styles = StyleSheet.create({
   promoTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
     marginBottom: 4,
   },
   promoCode: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
   },
   section: {
     padding: 16,
@@ -232,7 +225,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   emptyText: {
-    color: '#666',
     textAlign: 'center',
   }
 

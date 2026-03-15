@@ -14,7 +14,12 @@
     "search": {
         "title": "Recherche",
         "search_placeholder": "Rechercher un restaurant...",
-        "results_found": "restaurants trouvés"
+        "results_found": "restaurants trouvés",
+        "voice_error": "La reconnaissance vocale a échoué.",
+        "voice_error_start": "Impossible de démarrer la reconnaissance vocale.",
+        "voice_unsupported": "La reconnaissance vocale n'est pas disponible sur cet appareil.",
+        "start_voice": "Démarrer la recherche vocale",
+        "stop_voice": "Arrêter la recherche vocale"
     },
     "orders": {
         "title": "Mes Commandes",
@@ -57,7 +62,14 @@
         "directions": "Itinéraire",
         "call": "Appeler",
         "menu": "Menu",
-        "error_favorite": "Échec de la mise à jour du statut favori"
+        "error_favorite": "Échec de la mise à jour du statut favori",
+        "delivery_estimate": "Estimation de livraison",
+        "choose_delivery_address": "Choisissez une adresse de livraison",
+        "current_location": "Position actuelle",
+        "current_location_subtitle": "Utiliser votre position GPS",
+        "estimated_time": "Temps estimé",
+        "delivery_cost": "Coût de livraison",
+        "unknown": "Inconnu"
     },
     "common": {
         "home": "Accueil",

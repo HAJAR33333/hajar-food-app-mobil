@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { restaurantAPI } from '@/services/api';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Colors } from '@/constants/theme';
 
 export const CategoryList: React.FC = () => {
     const { t } = useTranslation();
+    const colorScheme = useColorScheme();
+    const colors = Colors[colorScheme ?? 'light'];
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -20,16 +24,19 @@ export const CategoryList: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{t('home.categories')}</Text>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <Text style={[styles.title, { color: colors.text }]}>{t('home.categories')}</Text>
             {loading ? (
-                <ActivityIndicator size="small" color="#FF6B35" style={{ alignSelf: 'flex-start' }} />
+                <ActivityIndicator size="small" color={colors.tint} style={{ alignSelf: 'flex-start' }} />
             ) : (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {categories.map((category) => (
-                        <TouchableOpacity key={category.id || category._id || category.name} style={styles.chip}>
+                        <TouchableOpacity
+                            key={category.id || category._id || category.name}
+                            style={[styles.chip, { backgroundColor: colorScheme === 'dark' ? '#2a2e32' : '#FFF4EF' }]}
+                        >
                             {category.icon && <Text style={styles.emojiIcon}>{category.icon}</Text>}
-                            <Text style={styles.chipText}>{category.name || category.label}</Text>
+                            <Text style={[styles.chipText, { color: colorScheme === 'dark' ? '#fefefe' : '#FF6B35' }]}>{category.name || category.label}</Text>
                         </TouchableOpacity>
                     ))}
                 </ScrollView>

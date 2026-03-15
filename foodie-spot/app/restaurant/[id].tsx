@@ -11,7 +11,7 @@ import {
   Platform,
   Share 
 } from "react-native";
-import { Dish, Restaurant } from "@/types";
+import { Dish, Restaurant, Address } from "@/types";
 import { router, useLocalSearchParams } from "expo-router";
 import { restaurantAPI, userAPI } from "@/services/api";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +19,7 @@ import { Image } from "expo-image";
 import { ArrowLeft, Clock, Heart, MapPin, Navigation, Phone, Share2, Star } from "lucide-react-native";
 import { DishCard } from "@/components/dish-card";
 import { useTranslation } from "react-i18next";
+import { locationService } from "@/services/location";
 
 export default function RestaurantScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -27,10 +28,51 @@ export default function RestaurantScreen() {
   const [menu, setMenu] = useState<Dish[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [estimatedTime, setEstimatedTime] = useState<number | null>(null);
+  const [deliveryCost, setDeliveryCost] = useState<number | null>(null);
 
   useEffect(() => {
     loadRestaurant();
   }, [id]);
+
+  const getDistanceKm = (coord1: { latitude: number; longitude: number }, coord2: { latitude: number; longitude: number }) => {
+    const toRad = (value: number) => (value * Math.PI) / 180;
+    const R = 6371;
+    const dLat = toRad(coord2.latitude - coord1.latitude);
+    const dLon = toRad(coord2.longitude - coord1.longitude);
+    const lat1 = toRad(coord1.latitude);
+    const lat2 = toRad(coord2.latitude);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const calculateDelivery = (from: { latitude: number; longitude: number }, to: { latitude: number; longitude: number }) => {
+    const distanceKm = getDistanceKm(from, to);
+    const time = Math.max(15, Math.round(15 + distanceKm * 7));
+    const fee = Number((2.5 + distanceKm * 0.9).toFixed(2));
+    return { distanceKm, time, fee };
+  };
+
+  const updateDeliveryEstimation = (restaurantCoord: { latitude: number; longitude: number } | undefined) => {
+    if (!restaurantCoord) {
+      setEstimatedTime(null);
+      setDeliveryCost(null);
+      return;
+    }
+    const target = selectedAddress?.coordinates || userLocation;
+    if (!target) {
+      setEstimatedTime(null);
+      setDeliveryCost(null);
+      return;
+    }
+    const result = calculateDelivery(restaurantCoord, target);
+    setEstimatedTime(result.time);
+    setDeliveryCost(result.fee);
+  };
 
   const loadRestaurant = async () => {
     try {
@@ -40,6 +82,29 @@ export default function RestaurantScreen() {
       setRestaurant(restaurantData);
       setMenu(menuData);
       setIsFavorite(restaurantData?.isFavorite || false);
+
+      const user = await userAPI.getCurrentUser();
+      const availableAddresses = user?.addresses || [];
+      setAddresses(availableAddresses);
+      if (availableAddresses.length > 0) {
+        setSelectedAddress(availableAddresses[0]);
+      }
+
+      const current = await locationService.getCurrentLocation();
+      if (current) {
+        setUserLocation(current);
+        if (!availableAddresses.length) {
+          setSelectedAddress({
+            id: 'current-location',
+            label: t('restaurant.current_location'),
+            street: t('restaurant.current_location'),
+            city: '',
+            postalCode: '',
+            country: '',
+            coordinates: current,
+          } as Address);
+        }
+      }
     } catch (err) {
       Alert.alert(t('home.error'), t('restaurant.error_load'));
     } finally {
@@ -47,20 +112,30 @@ export default function RestaurantScreen() {
     }
   };
 
+  useEffect(() => {
+    if (restaurant) {
+      updateDeliveryEstimation(restaurant.coordinates);
+    }
+  }, [restaurant, selectedAddress, userLocation]);
+
   const handleToggleFavorite = async () => {
+    if (!id) {
+      Alert.alert(t('home.error'), t('restaurant.error_favorite')); 
+      return;
+    }
+
     const previousState = isFavorite;
-    // Optimistic Update
     setIsFavorite(!isFavorite);
+
     try {
-      const newFavorite = await userAPI.toggleFavorite(id);
+      const newFavorite = await restaurantAPI.toggleFavorite(id);
       setIsFavorite(newFavorite);
-    } catch (error) {
-      // Revert on error
+    } catch (error: any) {
+      console.error('Toggle favorite failed', error?.response?.data || error?.message || error);
       setIsFavorite(previousState);
       Alert.alert(t('home.error'), t('restaurant.error_favorite'));
     }
   };
-
   const handleCall = () => {
     if (restaurant?.phone) {
       Linking.openURL(`tel:${restaurant.phone}`);
@@ -175,6 +250,41 @@ export default function RestaurantScreen() {
             </View>
           </View>
 
+          <View style={styles.estimateCard}>
+            <Text style={styles.estimateTitle}>{t('restaurant.delivery_estimate')}</Text>
+            <Text style={styles.estimateSubtitle}>{t('restaurant.choose_delivery_address')}</Text>
+            <View style={styles.addressList}>
+              {addresses.length > 0 ? (
+                addresses.map((address) => (
+                  <TouchableOpacity
+                    key={address.id}
+                    style={[
+                      styles.addressItem,
+                      selectedAddress?.id === address.id ? styles.addressSelected : null,
+                    ]}
+                    onPress={() => setSelectedAddress(address)}
+                  >
+                    <Text style={[styles.addressLabel, selectedAddress?.id === address.id ? styles.addressLabelSelected : null]}>{address.label || address.street || `${address.city}`}</Text>
+                    <Text style={styles.addressSmall}>{`${address.street}, ${address.city}`}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <View style={styles.addressItem}>
+                  <Text style={styles.addressLabel}>{t('restaurant.current_location')}</Text>
+                  <Text style={styles.addressSmall}>{t('restaurant.current_location_subtitle')}</Text>
+                </View>
+              )}
+            </View>
+            <View style={styles.estimateRow}>
+              <Text style={styles.estimateLabel}>{t('restaurant.estimated_time')}</Text>
+              <Text style={styles.estimateValue}>{estimatedTime ? `${estimatedTime} min` : t('restaurant.unknown')}</Text>
+            </View>
+            <View style={styles.estimateRow}>
+              <Text style={styles.estimateLabel}>{t('restaurant.delivery_cost')}</Text>
+              <Text style={styles.estimateValue}>{deliveryCost !== null ? `€${deliveryCost.toFixed(2)}` : t('restaurant.unknown')}</Text>
+            </View>
+          </View>
+
           <View style={styles.actions}>
             <TouchableOpacity style={styles.primaryButton} onPress={handleDirections}>
               <Navigation size={18} color="#fff" />
@@ -240,5 +350,17 @@ const styles = StyleSheet.create({
   secondaryButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#F5F5F5', borderRadius: 12, padding: 12 },
   secondaryButtonText: { color: '#666', fontSize: 16, fontWeight: '600' },
   menu: { padding: 16 },
+  estimateCard: { backgroundColor: '#FFF7ED', borderRadius: 12, padding: 12, marginTop: 12, borderColor: '#FCD34D', borderWidth: 1 },
+  estimateTitle: { fontWeight: '700', fontSize: 15, marginBottom: 4, color: '#C2410C' },
+  estimateSubtitle: { color: '#6B7280', fontSize: 12, marginBottom: 8 },
+  addressList: { marginTop: 8 },
+  addressItem: { backgroundColor: '#fff', borderRadius: 8, padding: 8, borderWidth: 1, borderColor: '#E5E7EB', marginBottom: 6 },
+  addressSelected: { borderColor: '#FF6B35', backgroundColor: '#FFFAF0' },
+  addressLabel: { color: '#111827', fontWeight: '600', fontSize: 14 },
+  addressLabelSelected: { color: '#C2410C' },
+  addressSmall: { color: '#6B7280', fontSize: 12 },
+  estimateRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 },
+  estimateLabel: { color: '#374151', fontWeight: '600' },
+  estimateValue: { color: '#111827', fontWeight: '700' },
   menuTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 }
 });

@@ -445,5 +445,106 @@
     ],
     "createdAt": "2026-03-15T20:04:14.403Z",
     "updatedAt": "2026-03-15T20:04:14.403Z"
+  },
+  {
+    "id": "375714ae-c6e2-4c04-9c8b-a77b2481c445",
+    "orderNumber": "FS-08488298",
+    "userId": "ab5b5329-bc9e-44cc-82c6-a266e54552d8",
+    "restaurantId": "r2",
+    "restaurantName": "Tokyo Roll",
+    "restaurantImage": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2070&auto=format&fit=crop",
+    "restaurantPhone": "+33 1 98 76 54 32",
+    "items": [
+      {
+        "menuItemId": "d14",
+        "quantity": 1,
+        "menuItem": {
+          "id": "d14",
+          "name": "Gyoza",
+          "description": "6 raviolis japonais porc et légumes, poêlés",
+          "price": 7.5,
+          "image": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=2070&auto=format&fit=crop",
+          "category": "Entrées",
+          "isAvailable": true,
+          "isPopular": true,
+          "isNew": false,
+          "isVegetarian": false,
+          "isVegan": false,
+          "isSpicy": false,
+          "allergens": [
+            "gluten",
+            "soja"
+          ]
+        },
+        "totalPrice": 7.5
+      }
+    ],
+    "status": "delivered",
+    "subtotal": 7.5,
+    "deliveryFee": 2.99,
+    "serviceFee": 0.99,
+    "tip": 0,
+    "discount": 0,
+    "promoApplied": null,
+    "total": 11.48,
+    "paymentMethod": "paypal",
+    "deliveryAddress": {
+      "label": "Adresse de livraison",
+      "street": "Ii",
+      "city": "",
+      "postalCode": "",
+      "country": "",
+      "latitude": 0,
+      "longitude": 0
+    },
+    "estimatedDelivery": "2026-03-15T21:36:28.300Z",
+    "driver": {
+      "id": "driver-001",
+      "name": "Thomas D.",
+      "phone": "+33 6 12 34 56 78",
+      "photo": "https://randomuser.me/api/portraits/men/32.jpg",
+      "vehicle": "Vélo électrique",
+      "rating": 4.8
+    },
+    "timeline": [
+      {
+        "status": "pending",
+        "timestamp": "2026-03-15T21:01:28.301Z",
+        "message": "Commande reçue"
+      },
+      {
+        "status": "confirmed",
+        "timestamp": "2026-03-15T21:01:38.338Z",
+        "message": "Commande confirmée par le restaurant"
+      },
+      {
+        "status": "preparing",
+        "timestamp": "2026-03-15T21:01:48.315Z",
+        "message": "Préparation en cours"
+      },
+      {
+        "status": "ready",
+        "timestamp": "2026-03-15T21:02:08.317Z",
+        "message": "Commande prête"
+      },
+      {
+        "status": "picked_up",
+        "timestamp": "2026-03-15T21:02:18.317Z",
+        "message": "Récupérée par le livreur"
+      },
+      {
+        "status": "delivering",
+        "timestamp": "2026-03-15T21:02:28.320Z",
+        "message": "En cours de livraison"
+      },
+      {
+        "status": "delivered",
+        "timestamp": "2026-03-15T21:02:58.329Z",
+        "message": "Livrée"
+      }
+    ],
+    "createdAt": "2026-03-15T21:01:28.301Z",
+    "updatedAt": "2026-03-15T21:02:58.328Z",
+    "actualDelivery": "2026-03-15T21:02:58.329Z"
   }
 ]

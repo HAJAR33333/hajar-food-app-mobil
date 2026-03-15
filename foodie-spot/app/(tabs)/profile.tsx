@@ -10,16 +10,21 @@ import type { User } from '@/types';
 import log from '@/services/logger';
 import { useToast } from '@/components/toast-provider';
 import { useAuth } from '@/contexts/auth-context';
+import { useTheme } from '@/contexts/theme-context';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Colors } from '@/constants/theme';
 import { useTranslation } from 'react-i18next';
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const toast = useToast();
+  const colorScheme = useColorScheme();
   const [user, setUser] = useState<User | null>(null);
   const [orderCount, setOrderCount] = useState<number>(0);
   const [lastOrderId, setLastOrderId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [averageRating, setAverageRating] = useState<number>(4.8);
+  const { theme, preference, setPreference } = useTheme();
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -147,7 +152,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme].background }]} edges={['top']}>
       <ScrollView>
         <View style={styles.header}>
           <View style={styles.profileContainer}>
@@ -163,9 +168,9 @@ export default function ProfileScreen() {
                 <Camera size={14} color="#fff" />
               </TouchableOpacity>
             </View>
-            <Text style={styles.name}>{user.name}</Text>
-            <Text style={styles.email}>{user.email}</Text>
-            <Text style={styles.phone}>{user.phone}</Text>
+            <Text style={[styles.name, { color: Colors[colorScheme].text }]}>{user.name}</Text>
+            <Text style={[styles.email, { color: Colors[colorScheme].text }]}>{user.email}</Text>
+            <Text style={[styles.phone, { color: Colors[colorScheme].text }]}>{user.phone}</Text>
           </View>
         </View>
 
@@ -205,6 +210,23 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.quickActionButton} onPress={() => router.push('/notifications')}>
             <Text style={styles.quickActionText}>🔔 Notifications</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.themeRow}>
+          <Text style={styles.themeLabel}>Mode thème</Text>
+          <View style={styles.themeButtons}>
+            {(['system', 'light', 'dark'] as const).map((value) => (
+              <TouchableOpacity
+                key={value}
+                style={[styles.themeButton, preference === value ? styles.themeButtonActive : {}]}
+                onPress={() => setPreference(value)}
+              >
+                <Text style={[styles.themeButtonText, preference === value ? styles.themeButtonTextActive : {}]}>
+                  {value === 'system' ? 'Système' : value === 'light' ? 'Clair' : 'Sombre'}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <Text style={styles.themeCurrent}>Actuel : {theme === 'dark' ? 'Sombre' : 'Clair'}</Text>
         </View>
 
         <View style={styles.menu}>
@@ -407,6 +429,49 @@ const styles = StyleSheet.create({
   quickActionText: {
     color: '#FF6B35',
     fontWeight: '700',
+  },
+  themeRow: {
+    marginHorizontal: 16,
+    marginTop: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    padding: 12,
+    backgroundColor: '#fff',
+    gap: 8,
+  },
+  themeLabel: {
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  themeButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  themeButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+  },
+  themeButtonActive: {
+    backgroundColor: '#FF6B35',
+    borderColor: '#FF6B35',
+  },
+  themeButtonText: {
+    color: '#333',
+    fontWeight: '600',
+    fontSize: 12,
+  },
+  themeButtonTextActive: {
+    color: '#fff',
+  },
+  themeCurrent: {
+    marginTop: 4,
+    fontSize: 12,
+    color: '#666',
   },
 });
 

@@ -3,6 +3,8 @@ import { Image } from 'expo-image';
 import { Clock, MapPin, Star, Heart } from 'lucide-react-native';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Colors } from '@/constants/theme';
 
 
 interface Props {
@@ -13,6 +15,8 @@ interface Props {
 }
 
 export const RestaurantCard: React.FC<Props> = ({ restaurant, onPress, onToggleFavorite, compact }) => {
+    const colorScheme = useColorScheme();
+    const colors = Colors[colorScheme ?? 'light'];
     const deliveryTimeText = typeof restaurant.deliveryTime === 'object'
         ? `${restaurant.deliveryTime.min}-${restaurant.deliveryTime.max} min`
         : `${restaurant.deliveryTime} min`;
@@ -22,15 +26,15 @@ export const RestaurantCard: React.FC<Props> = ({ restaurant, onPress, onToggleF
         : String(restaurant.priceRange);
 
     return (
-        <TouchableOpacity style={[styles.card, compact && styles.compact]} onPress={onPress}>
+        <TouchableOpacity style={[styles.card, { backgroundColor: colors.background, borderColor: colorScheme === 'dark' ? '#30363d' : '#f0f0f0' }, compact && styles.compact]} onPress={onPress}>
             <Image source={{ uri: restaurant.image }} style={[styles.image, compact && styles.compactImage]} />
 
             <View style={styles.content}>
                 <View style={styles.headerWithFavorite}>
                     <View style={styles.headerLeft}>
-                        <Text style={styles.name} numberOfLines={1}>{restaurant.name}</Text>
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>{priceRangeText}</Text>
+                        <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{restaurant.name}</Text>
+                        <View style={[styles.badge, { backgroundColor: colorScheme === 'dark' ? '#2f2f2f' : '#FFE5DB' }]}>
+                            <Text style={[styles.badgeText, { color: colorScheme === 'dark' ? '#fff' : '#FF6B35' }]}>{priceRangeText}</Text>
                         </View>
                     </View>
                     {onToggleFavorite && (
@@ -40,24 +44,24 @@ export const RestaurantCard: React.FC<Props> = ({ restaurant, onPress, onToggleF
                     )}
                 </View>
 
-                <Text style={styles.cuisine}>{restaurant.cuisine}</Text>
+                <Text style={[styles.cuisine, { color: colors.icon }]}>{restaurant.cuisine}</Text>
                 <View style={styles.meta}>
                     <View style={styles.metaItem}>
-                        <Star size={16} color="#FF6B35" />
-                        <Text style={styles.metaText}>{restaurant.rating} ({restaurant.reviewsCount}) avis</Text>
+                        <Star size={16} color={colors.tint} />
+                        <Text style={[styles.metaText, { color: colors.text }]}>{restaurant.rating} ({restaurant.reviewsCount}) avis</Text>
                     </View>
                     <View style={styles.metaItem}>
-                        <Clock size={16} color="#FF6B35" />
-                        <Text style={styles.metaText}>
+                        <Clock size={16} color={colors.tint} />
+                        <Text style={[styles.metaText, { color: colors.text }]}>
                             {deliveryTimeText}
                         </Text>
                     </View>
 
                     <View style={styles.metaItem}>
-                        <MapPin size={16} color="#FF6B35" />
-                        <Text style={styles.metaText}>{restaurant.distance ?? 15} km</Text>
+                        <MapPin size={16} color={colors.tint} />
+                        <Text style={[styles.metaText, { color: colors.text }]}>{restaurant.distance ?? 15} km</Text>
                     </View>
-                    {!compact && <Text style={styles.description} numberOfLines={2}>{restaurant.description}</Text>}
+                    {!compact && <Text style={[styles.description, { color: colors.text }]} numberOfLines={2}>{restaurant.description}</Text>}
 
                 </View>
             </View>
@@ -128,7 +132,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     cuisine: {
-        color: '#666',
         fontSize: 13
     },
     meta: {
@@ -143,11 +146,9 @@ const styles = StyleSheet.create({
     },
     metaText: {
         fontSize: 12,
-        color: '#666',
     },
 
     description: {
         fontSize: 12,
-        color: '#666',
     }
 });

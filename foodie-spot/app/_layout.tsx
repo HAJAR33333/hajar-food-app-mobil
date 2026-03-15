@@ -13,7 +13,7 @@ import 'react-native-reanimated';
 import { AuthProvider, useAuth } from '@/contexts/auth-context';
 import { ToastProvider } from '@/components/toast-provider';
 import { useOffline } from '@/hooks/use-offline';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useTheme, ThemeProvider as AppThemeProvider } from '@/contexts/theme-context';
 import { Colors } from '@/constants/theme';
 
 import '@/i18n';
@@ -23,7 +23,7 @@ export const unstable_settings = {
 };
 
 function RootLayoutContent() {
-  const colorScheme = useColorScheme();
+  const { theme } = useTheme();
   const { isOnline, pendingCount, isSyncing, syncNow } = useOffline();
   const { isAuthenticated, isLoading, refreshAuth } = useAuth();
   const segments = useSegments();
@@ -71,7 +71,7 @@ function RootLayoutContent() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       {!isOnline && (
         <View style={styles.offlineBanner}>
           <Ionicons name="cloud-offline-outline" size={16} color="#fff" />
@@ -115,14 +115,16 @@ const styles = StyleSheet.create({
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <ToastProvider>
-          <AuthProvider>
-            <RootLayoutContent />
-          </AuthProvider>
-        </ToastProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <AppThemeProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <ToastProvider>
+            <AuthProvider>
+              <RootLayoutContent />
+            </AuthProvider>
+          </ToastProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </AppThemeProvider>
   );
 }

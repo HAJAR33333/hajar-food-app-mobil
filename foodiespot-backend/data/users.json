@@ -215,5 +215,33 @@
       "language": "fr"
     },
     "createdAt": "2026-03-15T19:17:06.575Z"
+  },
+  {
+    "id": "ab5b5329-bc9e-44cc-82c6-a266e54552d8",
+    "email": "test@yh.com",
+    "firstName": "test",
+    "lastName": "Demo",
+    "phone": "",
+    "avatar": "",
+    "addresses": [
+      {
+        "id": "000ebd90-4f18-4ac3-9739-5973bf0a39ab",
+        "label": "Maison",
+        "street": "123 Rue de Paris",
+        "city": "Paris",
+        "postalCode": "75001",
+        "country": "France",
+        "latitude": 48.8566,
+        "longitude": 2.3522,
+        "isDefault": true
+      }
+    ],
+    "notificationsEnabled": true,
+    "preferences": {
+      "theme": "system",
+      "language": "fr"
+    },
+    "createdAt": "2026-03-15T20:48:07.009Z",
+    "password": "Vhhvvvvv"
   }
 ]

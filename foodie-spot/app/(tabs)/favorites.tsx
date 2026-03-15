@@ -5,9 +5,12 @@ import { useFocusEffect } from '@react-navigation/native';
 import { RestaurantCard } from '@/components/restaurant-card';
 import { restaurantAPI } from '@/services/api';
 import { Restaurant } from '@/types';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Colors } from '@/constants/theme';
 import { useTranslation } from 'react-i18next';
 
 export default function FavoritesScreen() {
+  const colorScheme = useColorScheme();
   const { t } = useTranslation();
   const [favorites, setFavorites] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,9 +51,9 @@ export default function FavoritesScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme].background }]} edges={['top']}>
       <View style={styles.content}>
-        <Text style={styles.title}>Mes favoris</Text>
+        <Text style={[styles.title, { color: Colors[colorScheme].text }]}>Mes favoris</Text>
       </View>
       {loading ? (
         <ActivityIndicator style={{ marginTop: 20 }} size="large" color="#FF6B35" />
@@ -76,7 +79,6 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   header: {
     padding: 20,
