@@ -102,6 +102,8 @@ const [successMessage, setSuccessMessage] = useState("");
     setTimeout(() => {
       setSuccessMessage("");
     }, 2000);
+
+    router.push('/cart');
   } catch (err) {
     console.error("handleAddToCart error =", err);
     Alert.alert("Erreur", "Impossible d’ajouter le plat au panier.");

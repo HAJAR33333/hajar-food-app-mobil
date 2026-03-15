@@ -1,86 +1,166 @@
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { Order } from "@/types";
+import { ScrollView, StyleSheet, Text, View, RefreshControl } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { orderAPI } from "@/services/api";
 
 export default function TrackingScreen() {
-    const { orderId } = useLocalSearchParams<{ orderId: string }>();
-    const [order, setOrder] = useState<Order | null>(null);
+  const { orderId } = useLocalSearchParams<{ orderId: string }>();
+  const [tracking, setTracking] = useState<any>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    useEffect(() => {
-        loadOrder();
-    }, [orderId]);
-
-    const loadOrder = async () => {
-        const orderData = await orderAPI.getOrderById(orderId);
-        setOrder(orderData);
-    };
-
-    if (!order) {
-        return (
-            <SafeAreaView style={styles.container} edges={['top']}>
-                <Text>Loading...</Text>
-            </SafeAreaView>
-        );
+  const loadTracking = useCallback(async () => {
+    if (!orderId) {
+      setErrorMessage('Aucun numéro de commande fourni.');
+      return;
     }
+    try {
+      const data = await orderAPI.getOrderTracking(orderId);
+      setTracking(data);
+      setErrorMessage(null);
+    } catch (error) {
+      console.error('Failed to load tracking', error);
+      setErrorMessage('Impossible de charger le suivi. Veuillez réessayer.');
+    }
+  }, [orderId]);
 
-    return (
-        <SafeAreaView style={styles.container} edges={['top']}>
-            <ScrollView contentContainerStyle={styles.content}>
-                <Text style={styles.title}>Suivi commande</Text>
-                <Text style={styles.subtitle}>Commande #{order.id}</Text>
-                <View style={styles.card}>
-                    <Text style={styles.label}>Restaurant</Text>
-                    <Text style={styles.value}>{order.restaurantName}</Text>
-                    <Text style={styles.label}>Statut</Text>
-                    <Text style={styles.status}>{order.status}</Text>
-                    <Text style={styles.label}>Adresse de livraison</Text>
-                    <Text style={styles.value}>{order.deliveryAddress}</Text>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
+  useEffect(() => {
+    loadTracking();
+    const timer = setInterval(() => {
+      loadTracking();
+    }, 20000);
+    return () => clearInterval(timer);
+  }, [loadTracking]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadTracking();
+    setRefreshing(false);
+  };
+
+  const order = tracking;
+  const driver = order?.driver;
+  const restaurant = order?.restaurant;
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <Text style={styles.title}>Suivi de la commande</Text>
+        <Text style={styles.subtitle}>Commande #{order?.orderNumber ?? order?.orderId ?? 'N/A'}</Text>
+        {errorMessage ? (
+          <View style={[styles.card, { borderColor: '#ffc7c7', backgroundColor: '#fff1f1' }]}>
+            <Text style={{ color: '#cc0000', fontWeight: '700' }}>{errorMessage}</Text>
+          </View>
+        ) : null}
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Statut</Text>
+          <Text style={styles.status}>{order?.status ?? 'En attente'}</Text>
+          <Text style={styles.cardLabel}>Adresse de livraison</Text>
+          <Text style={styles.value}>{
+            order?.deliveryAddress
+              ? `${order.deliveryAddress.street}, ${order.deliveryAddress.city}`
+              : 'N/A'
+          }</Text>
+        </View>
+
+        {restaurant ? (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Restaurant</Text>
+            <Text style={styles.value}>{restaurant.name}</Text>
+            <Text style={styles.smallText}>{restaurant.location?.address}</Text>
+          </View>
+        ) : null}
+
+        {order?.estimatedArrival ? (
+          <View style={styles.badge}><Text style={styles.badgeText}>Livraison estimée: {new Date(order.estimatedArrival).toLocaleTimeString()}</Text></View>
+        ) : null}
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Timeline</Text>
+          {order?.timeline?.map((step: any) => (
+            <View key={step.status} style={styles.stepRow}>
+              <View style={[styles.dot, step.status === order.status ? styles.dotActive : {}]} />
+              <View style={styles.stepTextBlock}>
+                <Text style={styles.stepLabel}>{step.message || step.status}</Text>
+                <Text style={styles.stepTime}>{step.timestamp ? new Date(step.timestamp).toLocaleString() : '-'}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {driver ? (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Livreur</Text>
+            <Text style={styles.value}>{driver.name}</Text>
+            <Text style={styles.smallText}>📞 {driver.phone}</Text>
+            <Text style={styles.smallText}>🚲 {driver.vehicle}</Text>
+            <Text style={styles.smallText}>⭐ {driver.rating} ({driver.totalDeliveries} livraisons)</Text>
+          </View>
+        ) : null}
+
+        {order?.restaurant?.location ? (
+          <View style={styles.mapCard}>
+            <MapView
+              provider={PROVIDER_GOOGLE}
+              style={styles.map}
+              initialRegion={{
+                latitude: order.restaurant.location.latitude,
+                longitude: order.restaurant.location.longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+              }}
+            >
+              <Marker
+                coordinate={{
+                  latitude: order.restaurant.location.latitude,
+                  longitude: order.restaurant.location.longitude,
+                }}
+                title={order.restaurant.name}
+                description="Restaurant"
+              />
+              {order.driverLocation ? (
+                <Marker
+                  coordinate={{
+                    latitude: order.driverLocation.latitude,
+                    longitude: order.driverLocation.longitude,
+                  }}
+                  pinColor="blue"
+                  title="Livreur"
+                />
+              ) : null}
+            </MapView>
+          </View>
+        ) : null}
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
-const  styles = StyleSheet.create({
-    container: {
-        flex: 1,
-       backgroundColor: '#fff',
-    },
-    loading: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    content: {
-        padding: 16,
-        gap: 12,
-    },
-    title: {    
-        fontSize: 22,
-        fontWeight: '700',
-    },
-    subtitle: {
-        color: '#666',
-    },
-    card: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 16,
-        borderWidth: 1,
-        borderColor: '#f0f0f0',},
-    label: {
-        fontSize: 12,
-        color: '#999', 
-        marginTop: 10
-        },  value: {
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    status: {
-        fontSize: 16,
-        fontWeight: '700',
-    },
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff' },
+  content: { padding: 16, gap: 12 },
+  title: { fontSize: 22, fontWeight: '700' },
+  subtitle: { color: '#666', marginBottom: 8 },
+  card: { backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#f0f0f0', padding: 12, gap: 6 },
+  cardTitle: { fontWeight: '700', marginBottom: 6 },
+  status: { fontSize: 18, fontWeight: '700', color: '#FF6B35' },
+  cardLabel: { marginTop: 8, fontSize: 12, color: '#888' },
+  value: { fontSize: 15, fontWeight: '600' },
+  smallText: { color: '#555', fontSize: 13 },
+  stepRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 4 },
+  dot: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#d1d5db', marginRight: 8 },
+  dotActive: { backgroundColor: '#10b981' },
+  stepTextBlock: { flex: 1 },
+  stepLabel: { fontWeight: '500', fontSize: 13 },
+  stepTime: { color: '#777', fontSize: 11 },
+  mapCard: { height: 220, borderRadius: 12, overflow: 'hidden', borderWidth: 1, borderColor: '#f0f0f0' },
+  map: { flex: 1 },
+  badge: { marginTop: 6, backgroundColor: '#ecfdf3', borderRadius: 10, padding: 8, alignItems: 'center' },
+  badgeText: { color: '#065f46', fontWeight: '700' },
 });

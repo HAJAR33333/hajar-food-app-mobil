@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { ArrowLeft, CheckCircle2, CreditCard, MapPin, Ticket } from "lucide-react-native";
 import { Dish } from "@/types";
+import { orderAPI } from "@/services/api";
 
 const CART_STORAGE_KEY = "cart_items";
 
@@ -105,8 +106,33 @@ export default function CheckoutScreen() {
     try {
       setSubmitting(true);
 
-      // Ici tu pourras remplacer par un vrai appel API :
-      // await orderAPI.createOrder({...})
+      const restaurantId = cartItems[0]?.restaurantId;
+      if (!restaurantId) {
+        Alert.alert("Erreur", "Impossible de déterminer le restaurant.");
+        return;
+      }
+
+      const items = cartItems.map((item) => ({
+        menuItemId: item.id,
+        quantity: item.quantity,
+      }));
+
+      const newOrder = await orderAPI.createOrder({
+        restaurantId,
+        items,
+        deliveryAddress: {
+          label: "Adresse de livraison",
+          street: address,
+          city: "", // Facultatif
+          postalCode: "",
+          country: "",
+          latitude: 0,
+          longitude: 0,
+        },
+        paymentMethod,
+        tip: 0,
+        promoCode: promoApplied ? promoCode : undefined,
+      });
 
       await AsyncStorage.removeItem(CART_STORAGE_KEY);
 
@@ -115,8 +141,8 @@ export default function CheckoutScreen() {
         "Votre commande a bien été enregistrée.",
         [
           {
-            text: "OK",
-            onPress: () => router.replace("/cart"),
+            text: "Voir le suivi",
+            onPress: () => router.replace(`/tracking/${newOrder.id}`),
           },
         ]
       );

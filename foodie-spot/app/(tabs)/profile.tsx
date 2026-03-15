@@ -17,6 +17,7 @@ export default function ProfileScreen() {
   const toast = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [orderCount, setOrderCount] = useState<number>(0);
+  const [lastOrderId, setLastOrderId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [averageRating, setAverageRating] = useState<number>(4.8);
   const { logout } = useAuth();
@@ -59,6 +60,7 @@ export default function ProfileScreen() {
 
       setUser(currentUser);
       setOrderCount(orders.length);
+      setLastOrderId(orders?.[0]?.id ?? null);
       const userRating = (userData as any)?.rating ?? 4.8;
       setAverageRating(Number(userRating) || 4.8);
     } catch (e) {
@@ -187,6 +189,18 @@ export default function ProfileScreen() {
         <View style={styles.quickActions}>
           <TouchableOpacity style={styles.quickActionButton} onPress={() => router.push('/cart')}>
             <Text style={styles.quickActionText}>Commandes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.quickActionButton}
+            onPress={() => {
+              if (!lastOrderId) {
+                Alert.alert('Aucune commande de suivi', 'Votre historique de commandes est vide pour le moment.');
+                return;
+              }
+              router.push({ pathname: '/tracking/[orderId]', params: { orderId: lastOrderId } });
+            }}
+          >
+            <Text style={styles.quickActionText}>Voir le suivi</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.quickActionButton} onPress={() => router.push('/notifications')}>
             <Text style={styles.quickActionText}>🔔 Notifications</Text>

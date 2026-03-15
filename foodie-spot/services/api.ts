@@ -379,12 +379,29 @@ export const orderAPI = {
             }
             return order;
         } catch (error) {
-            // log.error(`Failed to fetch order ${id}`, error);
             return (await cache.get<Order>(`order_${id}`)) || null;
         }
     },
+
+    async createOrder(payload: {
+        restaurantId: string;
+        items: Array<{ menuItemId: string; quantity: number }>;
+        deliveryAddress: any;
+        paymentMethod: string;
+        tip?: number;
+        deliveryInstructions?: string;
+        promoCode?: string;
+    }): Promise<Order> {
+        const response = await api.post('/orders', payload);
+        return response.data?.data;
+    },
+
+    async getOrderTracking(id: string): Promise<any> {
+        const response = await api.get(`/orders/${id}/track`);
+        return response.data?.data || null;
+    },
+
     async syncOfflineOrders(): Promise<void> {
-        // Implement offline sync logic if needed
         log.info('syncOfflineOrders called');
     }
 }

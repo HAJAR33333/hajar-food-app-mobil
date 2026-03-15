@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { RestaurantCard } from '@/components/restaurant-card';
 import { restaurantAPI } from '@/services/api';
 import { Restaurant } from '@/types';
@@ -21,9 +22,11 @@ export default function FavoritesScreen() {
     }
   };
 
-  useEffect(() => {
-    loadFavorites();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadFavorites();
+    }, [])
+  );
 
   const handleToggleFavorite = async (restaurantId: string) => {
     // Keep a snapshot for revert

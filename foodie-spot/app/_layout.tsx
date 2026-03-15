@@ -16,7 +16,7 @@ import { useOffline } from '@/hooks/use-offline';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors } from '@/constants/theme';
 
-import '@/i18n'; // Import i18n configuration
+import '@/i18n';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -54,7 +54,7 @@ function RootLayoutContent() {
     } 
     // Si l'utilisateur est déjà connecté et essaye d'aller sur l'écran de connexion
     else if (isAuthenticated && inAuthGroup) {
-      console.log('✅ Redirecting to home...');
+      console.log(' Redirecting to home...');
       hasAttemptedRefresh.current = false; // reset for next logout
       router.replace('/(tabs)');
     }
